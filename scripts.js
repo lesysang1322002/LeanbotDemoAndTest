@@ -395,7 +395,7 @@ function handleChangedValue(event) {
     }
 }
 
-let threshold = 100;
+let threshold = 33;
 
 function compareThreshold(value) {
     if (value > threshold) return 1;
