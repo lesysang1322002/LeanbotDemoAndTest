@@ -453,6 +453,7 @@ function updateBackground(id, value) {
         }
     }
 }
+
 function handleTimeoutCheck(check, array, lastCommand, timeout) {
     for (let i = 0; i < 12; i++) {
         if (!check[i]) {
@@ -486,49 +487,50 @@ function Updateallbackground(){
     updateBackground('TB2B', TB2B);
 }
 
-let checkButtonGreen = [0,0,0,0,0,0,0];
+let checkButtonGreen = [0, 0, 0, 0, 0, 0, 0];
+
 function UpdateBorderButtonDemo(){
 
     if(stringfill == 'Gripper'){
         element = document.getElementById("testGripper");
         element.style.border = "3px solid green";
-        checkButtonGreen[0]=1;
+        checkButtonGreen[0] = 1;
         checkClickDone = false;
     }
     if(stringfill == 'Motion'){
         element = document.getElementById("testMotor");
         element.style.border = "3px solid green";
-        checkButtonGreen[1]=1;
+        checkButtonGreen[1] = 1;
         checkClickDone = false;
     }
     if(stringfill == 'RGBLeds'){
         element = document.getElementById("testLed");
         element.style.border = "3px solid green";
-        checkButtonGreen[2]=1;
+        checkButtonGreen[2] = 1;
         checkClickDone = false;
     }
     if(stringfill == 'Buzzer'){
         element = document.getElementById("testBuzzer");
         element.style.border = "3px solid green"; 
-        checkButtonGreen[3]=1;
+        checkButtonGreen[3] = 1;
         checkClickDone = false;
     }
     if(stringfill == 'StraightMotion'){
         element = document.getElementById("testStraightMotion");
         element.style.border = "3px solid green"; 
-        checkButtonGreen[4]=1;
+        checkButtonGreen[4] = 1;
         checkClickDone = false;
     }
     if(stringfill == 'LineFollow'){
         element = document.getElementById("testFollowline");
         element.style.border = "3px solid green"; 
-        checkButtonGreen[5]=1;
+        checkButtonGreen[5] = 1;
         checkClickDone = false;
     }
     if(stringfill == 'Objectfollow'){
         element = document.getElementById("testObjectfollow");
         element.style.border = "3px solid green"; 
-        checkButtonGreen[6]=1;
+        checkButtonGreen[6] = 1;
         checkClickDone = false;
     }
 }
@@ -542,7 +544,7 @@ function areAllElementsEqualToOne(arr) {
     return true;
   }
 
-  function resetBackground() {
+function resetBackground() {
     updateBackground('ir2L', 0);
     updateBackground('ir0L', 0);
     updateBackground('ir1R', 0);
@@ -558,7 +560,7 @@ function areAllElementsEqualToOne(arr) {
 }
 
 let checkClickDone = false;
-// Thực hiện send và đổi màu viền khi click
+    // Thực hiện send và đổi màu viền khi click
 function runTest(component, command){
     if(checkmessage && !checkClickDone){
         send(command);
@@ -615,7 +617,7 @@ function TestLineFollow(){
 }
 
 function TestStraightMotion(){
-    runTest("StraightMotion",".StraightMotionStraightMotion");
+    runTest("StraightMotion",".StraightMotion");
 }
 
 function TestObjectfollow(){
