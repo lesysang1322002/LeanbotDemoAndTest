@@ -216,6 +216,7 @@ let distanceInt;
 
 let CountTouch = Array(4).fill(0);
 let checkCoutTouch = Array(4).fill(true);
+let arrString;
 
 // Các id của IR và Touch trong Grid
 const elementIds = [
@@ -232,11 +233,11 @@ function handleChangedValue(event) {
     let n = valueString.length;
     if(valueString[n-1] == '\n'){
         string += valueString;
-        let arrString = string.split(/[ \t\r\n]+/);
+        arrString = string.split(/[ \t\r\n]+/);
 
-        for(let i = 0; i < arrString.length; i++){
-            console.log("arrString[" + i + "] = " + arrString[i]);
-        }
+        // for(let i = 0; i < arrString.length; i++){
+        //     console.log("arrString[" + i + "] = " + arrString[i]);
+        // }
 
         // stringcheck = string[0]+string[1]+string[2]+string[7]+string[8]+string[9]+string[10]+string[11]+string[12];
         // Kiểm tra điều kiện
@@ -268,16 +269,16 @@ function handleChangedValue(event) {
             TB1B = parseInt(string[4]);                          checkArray[1]=TB1B;
             TB2A = parseInt(string[5]);                          checkArray[2]=TB2A;
             TB2B = parseInt(string[6]);                          checkArray[3]=TB2B;
-            ir6L = compareThreshold(parseInt(arrString[5]));     checkArray[4]=ir6L;
-            ir4L = compareThreshold(parseInt(arrString[6]));     checkArray[5]=ir4L;
-            ir2L = compareThreshold(parseInt(arrString[7]));     checkArray[6]=ir2L;
-            ir0L = compareThreshold(parseInt(arrString[8]));     checkArray[7]=ir0L;
-            ir1R = compareThreshold(parseInt(arrString[9]));     checkArray[8]=ir1R;
-            ir3R = compareThreshold(parseInt(arrString[10]));    checkArray[9]=ir3R;
-            ir5R = compareThreshold(parseInt(arrString[11]));    checkArray[10]=ir5R;
-            ir7R = compareThreshold(parseInt(arrString[12]));    checkArray[11]=ir7R;
+            ir6L = compareThreshold(0);     checkArray[4]=ir6L;
+            ir4L = compareThreshold(1);     checkArray[5]=ir4L;
+            ir2L = compareThreshold(2);     checkArray[6]=ir2L;
+            ir0L = compareThreshold(3);     checkArray[7]=ir0L;
+            ir1R = compareThreshold(4);     checkArray[8]=ir1R;
+            ir3R = compareThreshold(5);    checkArray[9]=ir3R;
+            ir5R = compareThreshold(6);    checkArray[10]=ir5R;
+            ir7R = compareThreshold(7);    checkArray[11]=ir7R;
 
-            console.log("ir6L: " + ir6L + " ir4L: " + ir4L + " ir2L: " + ir2L + " ir0L: " + ir0L + " ir1R: " + ir1R + " ir3R: " + ir3R + " ir5R: " + ir5R + " ir7R: " + ir7R);
+            // console.log("ir6L: " + ir6L + " ir4L: " + ir4L + " ir2L: " + ir2L + " ir0L: " + ir0L + " ir1R: " + ir1R + " ir3R: " + ir3R + " ir5R: " + ir5R + " ir7R: " + ir7R);
 
             lineState = arrString[4];
 
@@ -395,11 +396,13 @@ function handleChangedValue(event) {
     }
 }
 
-let threshold = 24;
+let threshold = Array(8).fill(24);
 
-function compareThreshold(value) {
-    if (value > threshold) return 1;
-    else return 0;
+function compareThreshold(index) {
+    let irValue = parseInt(arrString[index + 5]);
+    threshold[index] = Math.min(threshold[index], irValue * 1.8);
+    console.log("Threshold[" + index + "] = " + threshold[index]);
+    return irValue > threshold[index] ? 1 : 0;
 }
 
 function handleBorderChange(i, element, check, lastCommand, timeout, value) {
