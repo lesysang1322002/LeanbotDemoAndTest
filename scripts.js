@@ -165,6 +165,7 @@ function resetPageColor(){
             CountTouch[index] = 0; // Đặt lại CountTouch cho các phần tử này
             checkCoutTouch[index] = true; // Đặt lại checkCoutTouch
         });
+        threshold = Array(8).fill(map(75, 0, 768, 0, 255));
 }
 if(!checkmessage){
     distanceValue.style.color = "#CCCCCC";
