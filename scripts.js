@@ -402,7 +402,7 @@ function handleChangedValue(event) {
 }
 
 
-let threshold = Array(8).fill(map(75, 0, 768, 0, 255));
+let threshold = Array(8).fill(map(100, 0, 768, 0, 255));
 
 function map(value, in_min, in_max, out_min, out_max) {
     return parseInt((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
