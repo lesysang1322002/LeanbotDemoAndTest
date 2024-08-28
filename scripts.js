@@ -278,14 +278,10 @@ function handleChangedValue(event) {
             ir5R = compareThreshold(6);     checkArray[10]=ir5R;
             ir7R = compareThreshold(7);     checkArray[11]=ir7R;
 
-            console.log(
-                threshold[0].toString().padEnd(5) + threshold[1].toString().padEnd(5) + threshold[2].toString().padEnd(5) + threshold[3].toString().padEnd(5) +
-                threshold[4].toString().padEnd(5) + threshold[5].toString().padEnd(5) + threshold[6].toString().padEnd(5) + threshold[7].toString().padEnd(5) + 
-                "\n" + arrString[5].toString().padEnd(5) + arrString[6].toString().padEnd(5) + arrString[7].toString().padEnd(5) + arrString[8].toString().padEnd(5) + 
-                arrString[9].toString().padEnd(5) + arrString[10].toString().padEnd(5) + arrString[11].toString().padEnd(5) + arrString[12].toString().padEnd(5) +
-                "\n" + ir6L.toString().padEnd(5) + ir4L.toString().padEnd(5) + ir2L.toString().padEnd(5) + ir0L.toString().padEnd(5) + 
-                ir1R.toString().padEnd(5) + ir3R.toString().padEnd(5) + ir5R.toString().padEnd(5) + ir7R.toString().padEnd(5)
-            );
+            console.log(threshold[0]  + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5]  + " " + threshold[6] + " " + threshold[7] +
+                "\n"+ + arrString[5]  + " " + arrString[6] + " " + arrString[7] + " " + arrString[8] + " " + arrString[9] + " " + arrString[10] + " " + arrString[11] + " " + arrString[12] +
+                "\n"+ + ir6L + " " + ir4L + " " + ir2L + " " + ir0L + " " + ir1R + " " + ir3R + " " + ir5R + " " + ir7R);
+                console.log("\n");
             console.log("\n");            
             
 
