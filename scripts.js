@@ -279,11 +279,10 @@ function handleChangedValue(event) {
             ir7R = compareThreshold(7);     checkArray[11]=ir7R;
 
             console.log(threshold[0]  + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5]  + " " + threshold[6] + " " + threshold[7] +
-                "\n"+ + arrString[5]  + " " + arrString[6] + " " + arrString[7] + " " + arrString[8] + " " + arrString[9] + " " + arrString[10] + " " + arrString[11] + " " + arrString[12] +
-                "\n"+ + ir6L + " " + ir4L + " " + ir2L + " " + ir0L + " " + ir1R + " " + ir3R + " " + ir5R + " " + ir7R);
-                console.log("\n");
+            "\n"+ + arrString[5]  + " " + arrString[6] + " " + arrString[7] + " " + arrString[8] + " " + arrString[9] + " " + arrString[10] + " " + arrString[11] + " " + arrString[12] +
+            "\n"+ + ir6L + " " + ir4L + " " + ir2L + " " + ir0L + " " + ir1R + " " + ir3R + " " + ir5R + " " + ir7R);
+
             console.log("\n");            
-            
 
             lineState = arrString[4];
 
