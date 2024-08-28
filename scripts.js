@@ -274,9 +274,9 @@ function handleChangedValue(event) {
             ir2L = compareThreshold(2);     checkArray[6]=ir2L;
             ir0L = compareThreshold(3);     checkArray[7]=ir0L;
             ir1R = compareThreshold(4);     checkArray[8]=ir1R;
-            ir3R = compareThreshold(5);    checkArray[9]=ir3R;
-            ir5R = compareThreshold(6);    checkArray[10]=ir5R;
-            ir7R = compareThreshold(7);    checkArray[11]=ir7R;
+            ir3R = compareThreshold(5);     checkArray[9]=ir3R;
+            ir5R = compareThreshold(6);     checkArray[10]=ir5R;
+            ir7R = compareThreshold(7);     checkArray[11]=ir7R;
 
             // console.log("ir6L: " + ir6L + " ir4L: " + ir4L + " ir2L: " + ir2L + " ir0L: " + ir0L + " ir1R: " + ir1R + " ir3R: " + ir3R + " ir5R: " + ir5R + " ir7R: " + ir7R);
 
