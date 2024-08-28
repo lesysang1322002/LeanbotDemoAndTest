@@ -396,12 +396,16 @@ function handleChangedValue(event) {
     }
 }
 
-let threshold = Array(8).fill(24);
+
+let threshold = Array(8).fill(map(75, 0, 768, 0, 255));
+
+function map(value, in_min, in_max, out_min, out_max) {
+    return parseInt((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+}
 
 function compareThreshold(index) {
     let irValue = parseInt(arrString[index + 5]);
     threshold[index] = Math.min(threshold[index], irValue * 1.8);
-    console.log("Threshold[" + index + "] = " + threshold[index]);
     return irValue > threshold[index] ? 1 : 0;
 }
 
