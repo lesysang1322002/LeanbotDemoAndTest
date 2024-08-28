@@ -279,11 +279,11 @@ function handleChangedValue(event) {
             ir7R = compareThreshold(7);     checkArray[11]=ir7R;
 
             console.log(
-                "Threshold: " + threshold[0].toString().padEnd(5) + threshold[1].toString().padEnd(5) + threshold[2].toString().padEnd(5) + threshold[3].toString().padEnd(5) +
+                threshold[0].toString().padEnd(5) + threshold[1].toString().padEnd(5) + threshold[2].toString().padEnd(5) + threshold[3].toString().padEnd(5) +
                 threshold[4].toString().padEnd(5) + threshold[5].toString().padEnd(5) + threshold[6].toString().padEnd(5) + threshold[7].toString().padEnd(5) + 
-                "\nRawValue : " + arrString[5].toString().padEnd(5) + arrString[6].toString().padEnd(5) + arrString[7].toString().padEnd(5) + arrString[8].toString().padEnd(5) + 
+                "\n" + arrString[5].toString().padEnd(5) + arrString[6].toString().padEnd(5) + arrString[7].toString().padEnd(5) + arrString[8].toString().padEnd(5) + 
                 arrString[9].toString().padEnd(5) + arrString[10].toString().padEnd(5) + arrString[11].toString().padEnd(5) + arrString[12].toString().padEnd(5) +
-                "\niRValue  : " + ir6L.toString().padEnd(5) + ir4L.toString().padEnd(5) + ir2L.toString().padEnd(5) + ir0L.toString().padEnd(5) + 
+                "\n" + ir6L.toString().padEnd(5) + ir4L.toString().padEnd(5) + ir2L.toString().padEnd(5) + ir0L.toString().padEnd(5) + 
                 ir1R.toString().padEnd(5) + ir3R.toString().padEnd(5) + ir5R.toString().padEnd(5) + ir7R.toString().padEnd(5)
             );
             console.log("\n");            
