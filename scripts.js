@@ -165,7 +165,7 @@ function resetPageColor(){
             CountTouch[index] = 0; // Đặt lại CountTouch cho các phần tử này
             checkCoutTouch[index] = true; // Đặt lại checkCoutTouch
         });
-        threshold = Array(8).fill(map(120, 0, 768, 0, 255));
+        threshold = Array(8).fill(map(110, 0, 768, 0, 255));
 }
 if(!checkmessage){
     distanceValue.style.color = "#CCCCCC";
@@ -402,7 +402,7 @@ function handleChangedValue(event) {
 }
 
 
-let threshold = Array(8).fill(map(120, 0, 768, 0, 255));
+let threshold = Array(8).fill(map(110, 0, 768, 0, 255));
 
 function map(value, in_min, in_max, out_min, out_max) {
     return parseInt((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
@@ -410,7 +410,7 @@ function map(value, in_min, in_max, out_min, out_max) {
 
 function compareThreshold(index) {
     let irValue = parseInt(arrString[index + 5]);
-    threshold[index] = parseFloat((Math.min(threshold[index], irValue * 1.6))).toFixed(1);
+    threshold[index] = parseFloat((Math.min(threshold[index], irValue * 1.7))).toFixed(1);
     // console.log("Threshold " + index + ": " + threshold[index]);
     return irValue > threshold[index] ? 1 : 0;
 }
