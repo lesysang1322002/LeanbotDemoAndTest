@@ -410,7 +410,7 @@ function map(value, in_min, in_max, out_min, out_max) {
 
 function compareThreshold(index) {
     let irValue = parseInt(arrString[index + 5]);
-    threshold[index] = parseFloat((Math.min(threshold[index], irValue * 1.6))).toFixed(1);
+    threshold[index] = parseFloat((Math.min(threshold[index], irValue * 1.5))).toFixed(1);
     // console.log("Threshold " + index + ": " + threshold[index]);
     return irValue > threshold[index] ? 1 : 0;
 }
