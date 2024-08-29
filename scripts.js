@@ -165,7 +165,7 @@ function resetPageColor(){
             CountTouch[index] = 0; // Đặt lại CountTouch cho các phần tử này
             checkCoutTouch[index] = true; // Đặt lại checkCoutTouch
         });
-        threshold = Array(8).fill(map(110, 0, 768, 0, 255));
+        threshold = Array(8).fill(map(100, 0, 768, 0, 255));
 }
 if(!checkmessage){
     distanceValue.style.color = "#CCCCCC";
@@ -279,13 +279,14 @@ function handleChangedValue(event) {
             ir5R = compareThreshold(6);     checkArray[10]=ir5R;
             ir7R = compareThreshold(7);     checkArray[11]=ir7R;
 
-            console.log(threshold[0]  + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5]  + " " + threshold[6] + " " + threshold[7] +
-            "\n" +  arrString[5]  + " " + arrString[6] + " " + arrString[7] + " " + arrString[8] + " " + arrString[9] + " " + arrString[10] + " " + arrString[11] + " " + arrString[12] +
-            "\n" +  ir6L + " " + ir4L + " " + ir2L + " " + ir0L + " " + ir1R + " " + ir3R + " " + ir5R + " " + ir7R);
+            // console.log(threshold[0]  + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5]  + " " + threshold[6] + " " + threshold[7] +
+            // "\n" +  arrString[5]  + " " + arrString[6] + " " + arrString[7] + " " + arrString[8] + " " + arrString[9] + " " + arrString[10] + " " + arrString[11] + " " + arrString[12] +
+            // "\n" +  ir6L + " " + ir4L + " " + ir2L + " " + ir0L + " " + ir1R + " " + ir3R + " " + ir5R + " " + ir7R);
 
-            console.log("\n");            
+            // console.log("\n");            
+            // console.log(threshold[0] + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5] + " " + threshold[6] + " " + threshold[7]);
 
-            lineState = arrString[4];
+            lineState = ir2L.toString() + ir0L.toString() + ir1R.toString() + ir3R.toString();
 
             if(lineState === '1111' || lineState === '0000'){
                 testFollowline.style.color = "#CCCCCC";
@@ -402,7 +403,7 @@ function handleChangedValue(event) {
 }
 
 
-let threshold = Array(8).fill(map(110, 0, 768, 0, 255));
+let threshold = Array(8).fill(map(100, 0, 768, 0, 255));
 
 function map(value, in_min, in_max, out_min, out_max) {
     return parseInt((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
@@ -410,7 +411,7 @@ function map(value, in_min, in_max, out_min, out_max) {
 
 function compareThreshold(index) {
     let irValue = parseInt(arrString[index + 5]);
-    threshold[index] = parseFloat((Math.min(threshold[index], irValue * 1.7))).toFixed(1);
+    threshold[index] = parseFloat((Math.min(threshold[index], irValue * 1.8))).toFixed(1);
     // console.log("Threshold " + index + ": " + threshold[index]);
     return irValue > threshold[index] ? 1 : 0;
 }
@@ -534,7 +535,7 @@ function UpdateBorderButtonDemo(){
         checkButtonGreen[4] = 1;
         checkClickDone = false;
     }
-    if(stringfill == 'LineFollow'){
+    if(arrString[0] == 'LineFollow'){
         element = document.getElementById("testFollowline");
         element.style.border = "3px solid green"; 
         checkButtonGreen[5] = 1;
@@ -620,8 +621,9 @@ function TestMotor(){
 
 function TestLineFollow(){
     if(checkmessage){
-        if(lineState!=='1111' && lineState!=='0000'){
-        runTest("Followline",".LineFollow");
+        console.log("Line State2: " + lineState);
+        if(lineState !== '1111' && lineState !== '0000'){
+        runTest("Followline",".LineFollow " + threshold[0] + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5] + " " + threshold[6] + " " + threshold[7]);
         }
         else{
             alert('Please put Leanbot on black line to run Line Follow Demo');
