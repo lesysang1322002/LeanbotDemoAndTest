@@ -262,8 +262,9 @@ function handleChangedValue(event) {
 
         let s = string.length;
         stringfill = string.substring(0,s-2);
-
+        // console.log("Stringfill: " + stringfill);
         UpdateBorderButtonDemo();
+
         if(arrString[0] == "TB" && checkmessage){
 
             TB1A = parseInt(string[3]);                          checkArray[0]=TB1A;
@@ -307,6 +308,13 @@ function handleChangedValue(event) {
                 else if(checkArray[i] === 0){
                     checkCoutTouch[i] = true;
                 }
+                if(CountTouch[i] === 1){
+                    element.style.border = "3px solid orange";
+                }
+                if(CountTouch[i] === 3){
+                    element.style.border = "3px solid green";
+                    checksum[i] = 1;
+                }
             }
 
             for (let i = 4; i < 12; i++) {
@@ -315,8 +323,8 @@ function handleChangedValue(event) {
 
                 paragraph.innerHTML = elementIds[i] + "<br>" + arrString[i + 1];
             }
-            
-            for (let i = 0; i < elementIds.length; i++) {
+            // Comment chuyển màu viền của Touch
+            for (let i = 4; i < elementIds.length; i++) {
                 let element = document.getElementById(elementIds[i]);
                 
                 handleBorderChange(i, element, check1, Lastcommand1, Timeout1, 1);
@@ -397,6 +405,7 @@ function handleChangedValue(event) {
     else{
         string+=valueString;
     }
+    console.log(checkButtonGreen + checksum + check10cm + check30cm);
     if(areAllElementsEqualToOne(checkButtonGreen) && areAllElementsEqualToOne(checksum) && check10cm && check30cm){
         navbarTitle.style.color = "green";
     }
@@ -587,20 +596,22 @@ function runTest(component, command){
 
 let angleValues = ["0", "-30" , "120" , "90", "45"];
 
-function sendAngle(direction, currentAngle) {
+function sendAngle(nextAngleL, nextAngleR){ 
     if(!checkClickDone){
-    let currentIndex = angleValues.indexOf(currentAngle);
-    let nextIndex = (currentIndex + 1) % angleValues.length;
-    send(".Gripper" + direction + " " + angleValues[nextIndex]);
+    send([".Gripper", toStr(nextAngleL, 3), toStr(nextAngleR, 3)].join(' '));
     }
 }
 
-function buttonLeftGripper(){
-    sendAngle("L", angleL);
+function buttonGripperLeft(){
+    let currentIndexL = angleValues.indexOf(angleL);
+    let nextIndexL = (currentIndexL + 1) % angleValues.length;
+    sendAngle(angleValues[nextIndexL], angleR);
 }
 
-function buttonRightGipper(){
-    sendAngle("R", angleR);
+function buttonGripperRight(){
+    let currentIndexR = angleValues.indexOf(angleR);
+    let nextIndexR = (currentIndexR + 1) % angleValues.length;
+    sendAngle(angleL, angleValues[nextIndexR]);
 }
 
 function TestBuzzer(){
@@ -623,11 +634,18 @@ function TestLineFollow(){
     if(checkmessage){
         console.log("Line State2: " + lineState);
         if(lineState !== '1111' && lineState !== '0000'){
-            runTest("Followline",".LineFollow " 
-                + String(parseInt(threshold[2])).padStart(3, '0') + " " 
-                + String(parseInt(threshold[3])).padStart(3, '0') + " " 
-                + String(parseInt(threshold[4])).padStart(3, '0') + " " 
-                + String(parseInt(threshold[5])).padStart(3, '0'));
+            runTest(
+                "Followline",
+                [
+                  ".LineFollow",
+                  toStr(threshold[2], 3),
+                  toStr(threshold[3], 3),
+                  toStr(threshold[4], 3),
+                  toStr(threshold[5], 3),
+                ].join(' ')
+              );
+              
+                       
             console.log(".LineFollow " 
                 + String(parseInt(threshold[2])).padStart(3, '0') + " " 
                 + String(parseInt(threshold[3])).padStart(3, '0') + " " 
@@ -660,6 +678,16 @@ function TestIRLineCalibration(){
     send(".IRLine");
     }
 }
+
+function toStr(value, length) {
+    // Chuyển đổi giá trị thành số nguyên
+    const intValue = parseInt(value);
+    
+    // Chuyển đổi số nguyên thành chuỗi và thêm số 0 ở phía trước nếu độ dài của chuỗi nhỏ hơn `length`
+    return String(intValue).padStart(length, '0');
+  }
+  
+  
 
 document.addEventListener('DOMContentLoaded', function () {
     var infoButton = document.getElementById('infoButton');
