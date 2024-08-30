@@ -311,7 +311,7 @@ function handleChangedValue(event) {
                 if(CountTouch[i] === 1){
                     element.style.border = "3px solid orange";
                 }
-                if(CountTouch[i] === 3){
+                else if(CountTouch[i] === 3){
                     element.style.border = "3px solid green";
                     checksum[i] = 1;
                 }
