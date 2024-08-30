@@ -623,8 +623,17 @@ function TestLineFollow(){
     if(checkmessage){
         console.log("Line State2: " + lineState);
         if(lineState !== '1111' && lineState !== '0000'){
-        runTest("Followline",".LineFollow " + threshold[0] + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5] + " " + threshold[6] + " " + threshold[7]);
-        }
+            runTest("Followline",".LineFollow " 
+                + String(parseInt(threshold[2])).padStart(3, '0') + " " 
+                + String(parseInt(threshold[3])).padStart(3, '0') + " " 
+                + String(parseInt(threshold[4])).padStart(3, '0') + " " 
+                + String(parseInt(threshold[5])).padStart(3, '0'));
+            console.log(".LineFollow " 
+                + String(parseInt(threshold[2])).padStart(3, '0') + " " 
+                + String(parseInt(threshold[3])).padStart(3, '0') + " " 
+                + String(parseInt(threshold[4])).padStart(3, '0') + " " 
+                + String(parseInt(threshold[5])).padStart(3, '0'));
+            }
         else{
             alert('Please put Leanbot on black line to run Line Follow Demo');
         }
