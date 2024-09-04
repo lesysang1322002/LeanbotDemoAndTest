@@ -338,6 +338,7 @@ function handleChangedValue(event) {
 
             distance = arrString[14];
             distanceInt = parseInt(distance); // Chuyển đổi thành số nguyên
+
             if(distanceInt>100){
                 testObjectfollow.style.color = "#CCCCCC";
             }
@@ -598,7 +599,7 @@ let angleValues = ["0", "-30" , "120" , "90", "45"];
 
 function sendAngle(nextAngleL, nextAngleR){ 
     if(!checkClickDone){
-    send([".Gripper", toStr(nextAngleL, 3), toStr(nextAngleR, 3)].join(' '));
+    send([".GripperLR", toStr(nextAngleL, 3), toStr(nextAngleR, 3)].join(' '));
     }
 }
 
