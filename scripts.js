@@ -66,10 +66,26 @@ function onDisconnected(event) {
     console.log(`Device ${device.name} is disconnected.`);
 }
 
-function send(data) {
+async function send(data) {
     if (gattCharacteristic) {
         console.log("You -> " + data);
-        gattCharacteristic.writeValue(str2ab(data + "\n"));
+        let start = 0;
+        let dataLength = data.length;
+        while (start < dataLength) {
+            let subStr = data.substring(start, start + 16);
+            try {
+                await gattCharacteristic.writeValue(str2ab(subStr));
+            } catch (error) {
+                console.error("Error writing to characteristic:", error);
+                break;
+            }
+            start += 16;
+        }
+        try {
+            await gattCharacteristic.writeValue(str2ab('\n'));
+        } catch (error) {
+            console.error("Error writing newline to characteristic:", error);
+        }
     } else {
         console.log("GATT Characteristic not found.");
     }
@@ -107,66 +123,68 @@ function toggleFunction() {
     }
 }
 function resetPageColor(){
-        checkmessage=false;
-        checkpopup = false;
-        navbarTitle.style.color = "orange";
-        document.getElementById("buttonText").innerText = "Scan";
-        distanceValue.style.color = "#CCCCCC";
-        textangle.style.color = "#CCCCCC";
-        textangleLeft.style.color = "#CCCCCC";
-        textangleRight.style.color = "#CCCCCC";
-        testIRLineCalibration.style.color = "#CCCCCC";
-        buttonsTest.forEach(item => {
+    checkmessage=false;
+    checkpopup = false;
+    navbarTitle.style.color = "orange";
+    document.getElementById("buttonText").innerText = "Scan";
+    distanceValue.style.color = "#CCCCCC";
+    textangle.style.color = "#CCCCCC";
+    textangleLeft.style.color = "#CCCCCC";
+    textangleRight.style.color = "#CCCCCC";
+    testIRLineCalibration.style.color = "#CCCCCC";
+    buttonsTest.forEach(item => {
+    item.style.color = "#CCCCCC";
+    });
+    gridItems.forEach(item => {
         item.style.color = "#CCCCCC";
-        });
-        gridItems.forEach(item => {
-            item.style.color = "#CCCCCC";
-        });
-        distanceValue.textContent="HC-SR04 Ultrasonic distance";
-        distanceValue.style.fontSize = "13px";
-        clearTimeout(Timeout10cm);
-        clearTimeout(Timeout30cm);
-        for(let i=0;i<12;i++){
-            clearTimeout(Timeout1[i]);
-            clearTimeout(Timeout0[i]);
-            Lastcommand1[i] = true;
-            Lastcommand0[i] = true;
-            check0[i] = false;
-            check1[i] = false;
-        }
-        angleLValue.textContent = '';
-        angleRValue.textContent = '';
-        gridItems.forEach(item => {
-            item.style.border = "3px solid #CCCCCC";
-        });
-        buttonsTest.forEach(item => {
-            item.style.border = "3px solid #CCCCCC";
-        });
-        elements.forEach(item => {
-            item.style.color = "#CCCCCC";
-        });
-        slider.value=0;
-        checksum= Array(12).fill(0);
-        check0= Array(12).fill(0);
-        check1= Array(12).fill(0);
-        check10cm=false;
-        check30cm=false;
-        slidercontainer.style.border = "3px solid #CCCCCC ";
-        element10cm.style.color = "#CCCCCC";
-        element10cm.style.color = "#CCCCCC";
-        resetBackground();
-        checkClickDone = false;
-        clearTimeout(timeoutCheckMessage);
+    });
+    distanceValue.textContent="HC-SR04 Ultrasonic distance";
+    distanceValue.style.fontSize = "13px";
+    clearTimeout(Timeout10cm);
+    clearTimeout(Timeout30cm);
+    for(let i=0;i<12;i++){
+        clearTimeout(Timeout1[i]);
+        clearTimeout(Timeout0[i]);
+        Lastcommand1[i] = true;
+        Lastcommand0[i] = true;
+        check0[i] = false;
+        check1[i] = false;
+    }
+    angleLValue.textContent = '';
+    angleRValue.textContent = '';
+    gridItems.forEach(item => {
+        item.style.border = "3px solid #CCCCCC";
+    });
+    buttonsTest.forEach(item => {
+        item.style.border = "3px solid #CCCCCC";
+    });
+    elements.forEach(item => {
+        item.style.color = "#CCCCCC";
+    });
+    slider.value=0;
+    checksum= Array(12).fill(0);
+    check0= Array(12).fill(0);
+    check1= Array(12).fill(0);
+    check10cm=false;
+    check30cm=false;
+    slidercontainer.style.border = "3px solid #CCCCCC ";
+    element10cm.style.color = "#CCCCCC";
+    element10cm.style.color = "#CCCCCC";
+    resetBackground();
+    checkClickDone = false;
+    clearTimeout(timeoutCheckMessage);
 
-        const resetElements = ["TB1A", "TB1B", "TB2A", "TB2B"];
-        resetElements.forEach((id, index) => {
-            let paragraph = document.getElementById(id).querySelector('p');
-            paragraph.innerHTML = `${id}<br>0`; // Sử dụng <br> để xuống dòng
-            CountTouch[index] = 0; // Đặt lại CountTouch cho các phần tử này
-            checkCoutTouch[index] = true; // Đặt lại checkCoutTouch
-        });
-        threshold = Array(8).fill(map(100, 0, 768, 0, 255));
+    const resetElements = ["TB1A", "TB1B", "TB2A", "TB2B"];
+    resetElements.forEach((id, index) => {
+        let paragraph = document.getElementById(id).querySelector('p');
+        paragraph.innerHTML = `${id}<br>0`; // Sử dụng <br> để xuống dòng
+        CountTouch[index] = 0; // Đặt lại CountTouch cho các phần tử này
+        checkCoutTouch[index] = true; // Đặt lại checkCoutTouch
+    });
+    threshold = Array(8).fill(map(100, 0, 768, 0, 255));
+    checkTestObjectDemo = false;
 }
+
 if(!checkmessage){
     distanceValue.style.color = "#CCCCCC";
     textangle.style.color = "#CCCCCC";
@@ -280,13 +298,7 @@ function handleChangedValue(event) {
             ir5R = compareThreshold(6);     checkArray[10]=ir5R;
             ir7R = compareThreshold(7);     checkArray[11]=ir7R;
 
-            // console.log(threshold[0]  + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5]  + " " + threshold[6] + " " + threshold[7] +
-            // "\n" +  arrString[5]  + " " + arrString[6] + " " + arrString[7] + " " + arrString[8] + " " + arrString[9] + " " + arrString[10] + " " + arrString[11] + " " + arrString[12] +
-            // "\n" +  ir6L + " " + ir4L + " " + ir2L + " " + ir0L + " " + ir1R + " " + ir3R + " " + ir5R + " " + ir7R);
-
-            // console.log("\n");            
-            // console.log(threshold[0] + " " + threshold[1] + " " + threshold[2] + " " + threshold[3] + " " + threshold[4] + " " + threshold[5] + " " + threshold[6] + " " + threshold[7]);
-
+            
             lineState = ir2L.toString() + ir0L.toString() + ir1R.toString() + ir3R.toString();
 
             if(lineState === '1111' || lineState === '0000'){
@@ -339,10 +351,16 @@ function handleChangedValue(event) {
             distance = arrString[14];
             distanceInt = parseInt(distance); // Chuyển đổi thành số nguyên
 
-            if(distanceInt>100){
+            if(distanceInt > 50){
                 testObjectfollow.style.color = "#CCCCCC";
             }
             else{
+                if(checkTestObjectDemo){
+                    alertBox.style.display = 'none';
+                    checkClickDone = false;
+                    runTest("Objectfollow",".Objectfollow");
+                    checkTestObjectDemo = false;
+                }
                 testObjectfollow.style.color = "green";
             }
 
@@ -406,7 +424,7 @@ function handleChangedValue(event) {
     else{
         string+=valueString;
     }
-    console.log(checkButtonGreen + checksum + check10cm + check30cm);
+    // console.log(checkButtonGreen + checksum + check10cm + check30cm);
     if(areAllElementsEqualToOne(checkButtonGreen) && areAllElementsEqualToOne(checksum) && check10cm && check30cm){
         navbarTitle.style.color = "green";
     }
@@ -533,7 +551,7 @@ function UpdateBorderButtonDemo(){
         checkButtonGreen[2] = 1;
         checkClickDone = false;
     }
-    if(stringfill == 'Buzzer'){
+    if(arrString[0] == 'Buzzer'){
         element = document.getElementById("testBuzzer");
         element.style.border = "3px solid green"; 
         checkButtonGreen[3] = 1;
@@ -615,8 +633,9 @@ function buttonGripperRight(){
     sendAngle(angleL, angleValues[nextIndexR]);
 }
 
+let MarioRTTTL = "mario:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a5,16f6,8g6,8e6,16c6,16d6,8b,16p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a5,16f6,8g6,8e6,16c6,16d6,8b,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16c7,16p,16c7,16c7,p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16d#6,8p,16d6,8p,16c6";
 function TestBuzzer(){
-    runTest("Buzzer", ".Buzzer");
+    runTest("Buzzer", ".Buzzer " + MarioRTTTL);
 }
 
 function TestGripper(){
@@ -663,16 +682,28 @@ function TestStraightMotion(){
     runTest("StraightMotion",".StraightMotion");
 }
 
+let checkTestObjectDemo = false;
+let alertBox = document.getElementById('customAlert');
+
 function TestObjectfollow(){
+
     if(checkmessage){
-        if(distanceInt <= 100){
+        if(distanceInt <= 50){
+            // Chạy khi khoảng cách đúng
             runTest("Objectfollow",".Objectfollow");
+            
+            // Ẩn thông báo nếu đang hiển thị
+           
         }
         else{
-            alert('Please put an object within 100 cm in front of Leanbot');
+            // Hiển thị thông báo khi khoảng cách không đạt yêu cầu
+            alertBox.style.display = 'block';
+            checkTestObjectDemo = true;
+            checkClickDone = true;
         }
     }
 }
+
 
 function TestIRLineCalibration(){
     if(checkmessage){
