@@ -306,6 +306,21 @@ function handleChangedValue(event) {
             }
             else{
                 testFollowline.style.color = "green";
+                if(checkAlertFollowLine){
+                    AlertFollowLine.style.display = 'none';
+                    checkClickDone = false;
+                    runTest(
+                        "Followline",
+                        [
+                          ".LineFollow",
+                          toStr(threshold[2], 3),
+                          toStr(threshold[3], 3),
+                          toStr(threshold[4], 3),
+                          toStr(threshold[5], 3),
+                        ].join(' ')
+                    );
+                    checkAlertFollowLine = false;
+                }
             }
             
             for (let i = 0; i < 4; i++) {
@@ -650,9 +665,12 @@ function TestMotor(){
     runTest("Motor", ".Motion");
 }
 
+let AlertFollowLine = document.getElementById('customAlertFollowLine');
+let checkAlertFollowLine = false;
+
 function TestLineFollow(){
     if(checkmessage){
-        console.log("Line State2: " + lineState);
+        // console.log("Line State2: " + lineState);
         if(lineState !== '1111' && lineState !== '0000'){
             runTest(
                 "Followline",
@@ -663,17 +681,18 @@ function TestLineFollow(){
                   toStr(threshold[4], 3),
                   toStr(threshold[5], 3),
                 ].join(' ')
-              );
-              
+            );
                        
-            console.log(".LineFollow " 
-                + String(parseInt(threshold[2])).padStart(3, '0') + " " 
-                + String(parseInt(threshold[3])).padStart(3, '0') + " " 
-                + String(parseInt(threshold[4])).padStart(3, '0') + " " 
-                + String(parseInt(threshold[5])).padStart(3, '0'));
+            // console.log(".LineFollow " 
+            //     + String(parseInt(threshold[2])).padStart(3, '0') + " " 
+            //     + String(parseInt(threshold[3])).padStart(3, '0') + " " 
+            //     + String(parseInt(threshold[4])).padStart(3, '0') + " " 
+            //     + String(parseInt(threshold[5])).padStart(3, '0'));
             }
         else{
-            alert('Please put Leanbot on black line to run Line Follow Demo');
+            AlertFollowLine.style.display = 'block';
+            checkClickDone = true;
+            checkAlertFollowLine = true;
         }
     }
 }
@@ -717,10 +736,20 @@ function toStr(value, length) {
     
     // Chuyển đổi số nguyên thành chuỗi và thêm số 0 ở phía trước nếu độ dài của chuỗi nhỏ hơn `length`
     return String(intValue).padStart(length, '0');
-  }
-  
-  
+}
 
+function closeCustomAlert() {
+    document.getElementById('customAlert').style.display = 'none';
+}
+
+function closeCustomAlertFollowLine() {
+    document.getElementById('customAlertFollowLine').style.display = 'none';
+}
+
+function closeAlertErrorCode(){
+    document.getElementById('infopopup').style.display = 'none';
+}
+  
 document.addEventListener('DOMContentLoaded', function () {
     var infoButton = document.getElementById('infoButton');
     var infoContent = document.getElementById('infoContent');

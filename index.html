@@ -9,12 +9,14 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <div class="info-popup" id="infopopup" style="display:none;">
+    <div class="info-popup" id = "infopopup" style="display:none;">
         <h6><strong>Incorrect data from Leanbot.</strong></h6>
         <h6><strong> Please upload the following code to Leanbot:</strong></h6>
         <a href="https://git.pythaverse.space/quang.dinh/LeanbotDistributors/blob/master/Leanbot_Testing/Leanbot_Standard/code/Leanbot_Standard_test.ino">https://git.pythaverse.space/quang.dinh/
             LeanbotDistributors/blob/master/Leanbot_Testing/
-            Leanbot_Standard/code/Leanbot_Standard_test.ino</a>
+            Leanbot_Standard/code/Leanbot_Standard_test.ino
+        </a>
+        <button id="cancelButton" onclick = "closeAlertErrorCode()">Cancel</button>
     </div>
     <nav class="navbar" style="padding: 0px 0px;">
         <button class="btn btn-primary-scan" id="toggleButton" onclick="toggleFunction()" style="padding: 0px 0px">
@@ -115,10 +117,15 @@
         </div>
     </div>
     <br>
-    <div id="customAlert" class = "messageAlert">
-        To start Object Follow Demo, please put your hand 
-        <br>
-        (or an object) within 50 cm in front of Leanbot
+    <div id="customAlert" class = "info-popup">
+        <h6><strong>To start Object Follow Demo, please put your hand </strong></h6>
+        <h6><strong>(or an object) within 50 cm in front of Leanbot   </strong></h6>
+        <button id="cancelButton" onclick = "closeCustomAlert()">Cancel</button>
+    </div>  
+    <div id="customAlertFollowLine" class = "info-popup">
+        <h6><strong>To start the Line Follow Demo, please place the Leanbot </strong></h6>
+        <h6><strong>so that the IR sensors are not completely on black or white areas.</strong></h6>
+        <button id="cancelButton" onclick = "closeCustomAlertFollowLine()">Cancel</button>
     </div>      
     <p><a href="https://git.pythaverse.space/quang.dinh/LeanbotDistributors/blob/master/Leanbot_Testing/Leanbot_Standard/code/Leanbot_Standard_test.ino">Leanbot Code</a></p>
 </body>
