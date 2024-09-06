@@ -670,7 +670,6 @@ let checkAlertFollowLine = false;
 
 function TestLineFollow(){
     if(checkmessage){
-        // console.log("Line State2: " + lineState);
         if(lineState !== '1111' && lineState !== '0000'){
             runTest(
                 "Followline",
@@ -681,14 +680,8 @@ function TestLineFollow(){
                   toStr(threshold[4], 3),
                   toStr(threshold[5], 3),
                 ].join(' ')
-            );
-                       
-            // console.log(".LineFollow " 
-            //     + String(parseInt(threshold[2])).padStart(3, '0') + " " 
-            //     + String(parseInt(threshold[3])).padStart(3, '0') + " " 
-            //     + String(parseInt(threshold[4])).padStart(3, '0') + " " 
-            //     + String(parseInt(threshold[5])).padStart(3, '0'));
-            }
+            );     
+        }
         else{
             AlertFollowLine.style.display = 'block';
             checkClickDone = true;
@@ -740,10 +733,14 @@ function toStr(value, length) {
 
 function closeCustomAlert() {
     document.getElementById('customAlert').style.display = 'none';
+    checkClickDone = false;
+    checkTestObjectDemo = false;
 }
 
 function closeCustomAlertFollowLine() {
     document.getElementById('customAlertFollowLine').style.display = 'none';
+    checkClickDone = false;
+    checkAlertFollowLine = false;
 }
 
 function closeAlertErrorCode(){
