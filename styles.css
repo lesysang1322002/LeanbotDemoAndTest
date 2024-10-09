@@ -258,31 +258,37 @@ body {
 
   .grid-item.ir4L {
     grid-column: 3; /* Bắt đầu từ cột 3 */
-    grid-row: 8 / span 2; /* Nằm ở hàng 8 và chiếm 2 hàng */
+    grid-row: 8; /* Nằm ở hàng 8 và chiếm 2 hàng */
     height: 34px;
-    width:  34px;
+    width: 34px;
     border-radius: 50%;
+
+    place-self: center; 
   }
+
   .grid-item.ir2L {
     grid-column: 5; /* Bắt đầu từ cột 5 */
-    grid-row: 8 / span 2; /* Nằm ở hàng 8 và chiếm 2 hàng */
+    grid-row: 8 ; /* Nằm ở hàng 8 và chiếm 2 hàng */
     height: 34px;
     width:  34px;
     border-radius: 50%;
+    place-self: center;
   }
   .grid-item.ir0L {
     grid-column: 7; /* Bắt đầu từ cột 6 và chiếm 4 cột */
-    grid-row: 8 / span 2; /* Nằm ở hàng 8 và chiếm 2 hàng */
+    grid-row: 8; /* Nằm ở hàng 8 và chiếm 2 hàng */
     height: 34px;
     width:  34px;
     border-radius: 50%;
+    place-self: center;
   }
   .grid-item.ir1R {
     grid-column: 9; /* Bắt đầu từ cột 6 và chiếm 4 cột */
-    grid-row: 8 / span 2; /* Nằm ở hàng 8 và chiếm 2 hàng */
+    grid-row: 8 ; /* Nằm ở hàng 8 và chiếm 2 hàng */
     height: 34px;
     width:  34px;
     border-radius: 50%;
+    place-self: center;
   }
   .grid-item.ir3R {
     grid-column: 11; /* Bắt đầu từ cột 6 và chiếm 4 cột */
@@ -290,27 +296,31 @@ body {
     height: 34px;
     width:  34px;
     border-radius: 50%;
+    place-self: center;
   }
   .grid-item.ir5R {
     grid-column: 13; /* Bắt đầu từ cột 6 và chiếm 4 cột */
-    grid-row: 8 / span 2; /* Nằm ở hàng 8 và chiếm 2 hàng */
+    grid-row: 8 ; /* Nằm ở hàng 8 và chiếm 2 hàng */
     height: 34px;
     width:  34px;
     border-radius: 50%;
+    place-self: center;
   }
   .grid-item.ir6L {
     grid-column: 3; /* Bắt đầu từ cột 6 và chiếm 4 cột */
-    grid-row: 6 / span 2; /* Nằm ở hàng 2 */
+    grid-row: 6 ; /* Nằm ở hàng 2 */
     height: 34px;
     width:  34px;
     border-radius: 50%;
+    place-self: center;
   }
   .grid-item.ir7R {
     grid-column: 13; /* Bắt đầu từ cột 6 và chiếm 4 cột */
-    grid-row: 6 / span 2; /* Nằm ở hàng 2 */
+    grid-row: 6 ; /* Nằm ở hàng 2 */
     height: 34px;
     width:  34px;
     border-radius: 50%;
+    place-self: center;
   }
   
   .grid-item.TB1A {
@@ -319,6 +329,7 @@ body {
     height:60px;
     width:33px;
     border-radius: 5px;
+    place-self: center;
   }
   
   .grid-item.TB2A {
@@ -327,6 +338,7 @@ body {
     height:60px;
     width:33px;
     border-radius: 5px;
+    place-self: center;
   }
   
   .grid-item.TB1B {
@@ -335,6 +347,7 @@ body {
     height:60px;
     width:33px;
     border-radius: 5px;
+    place-self: center;
   }
   
   .grid-item.TB2B {
@@ -343,6 +356,7 @@ body {
     height:60px;
     width:33px;
     border-radius: 5px;
+    place-self: center;
   }
   
   .Gripper{
