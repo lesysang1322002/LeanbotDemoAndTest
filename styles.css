@@ -256,6 +256,14 @@ body {
     justify-content: center;
   }
 
+  .GripperCalibration{
+    grid-column: 7 / span 3;
+    grid-row: 6;
+    display: flex;
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center;
+  }
+
   .grid-item.ir4L {
     grid-column: 3; /* Bắt đầu từ cột 3 */
     grid-row: 8; /* Nằm ở hàng 8 và chiếm 2 hàng */
@@ -381,6 +389,13 @@ body {
     background-color: #a0cef1 !important; 
     border: none;
   }
+
+  .buttonGripperCalibration{
+    border-radius: 4px;
+    width: 80px;
+    background-color: #a0cef1 !important; 
+    border: none;
+  }
   
   p{
     font-size:10px;
@@ -468,3 +483,157 @@ body {
     border-radius: 5px;
     border: 3px solid white;
   }
+
+.contentCalibration {
+  display: none;
+  position: fixed; 
+  top: 60%; 
+  left: 50%; 
+  transform: translate(-50%, -50%);
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+}
+
+.containerCalibration {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+}
+
+.grid-containerCalibration {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.angleLCali, .angleCali, .angleRCali {
+  text-align: center;
+}
+
+.angleCali{
+  grid-column: 8 / span 3;
+  grid-row: 1 ;
+}
+.angleRCali{
+  grid-column: 2 / span 3;
+  grid-row: 2 ;
+  text-align: center;
+}
+.angleLCali{
+  grid-column: 14 / span 3;
+  grid-row: 2;
+  text-align: center;
+}
+.angleRvalueCali {
+  grid-column: 2 / span 3;
+  grid-row: 3 / span 3;
+  text-align: center;
+  cursor: pointer;
+  background: none;
+  border-radius: 5px;
+  width: 100px;
+  height: 100px;
+}
+.angleLvalueCali {
+  grid-column: 14 / span 3;
+  grid-row: 3 / span 3;
+  text-align: center;
+  cursor: pointer;
+  background: none;
+  border-radius: 5px;
+  width: 100px;
+  height: 100px;
+}
+.R0decrement{
+  grid-column: 1 / span 2;
+  grid-row: 7 ;
+}
+.R0increment{
+  grid-column: 4 / span 2;
+  grid-row: 7 ;
+}
+.L0increment{
+  grid-column: 13 / span 2;
+  grid-row: 7;
+}
+.L0decrement{
+  grid-column: 16 / span 2;
+  grid-row: 7;
+}
+.R90increment{
+  grid-column: 6 / span 2;
+  grid-row: 3 ;
+}
+.R90decrement{
+  grid-column: 6 / span 2;
+  grid-row: 5;
+}
+.L90decrement{
+  grid-column: 11 / span 2;
+  grid-row: 5;
+}
+.L90increment{
+  grid-column: 11 / span 2;
+  grid-row: 3;
+}
+.Nextbutton{
+  grid-column: 8 / span 3;
+  grid-row: 7  ;
+  font-weight: bold;
+}
+.Backbutton{
+  grid-column: 8 / span 3;
+  grid-row: 9;
+  font-weight: bold;
+}
+.TextArea{
+  grid-column: 1 / span 17;
+  grid-row: 11 / span 2;
+  text-align: center;
+  font-size: 18px;
+  border: none;
+  width:900px;
+  height:80px;
+}
+
+#textareaCali{
+  width: 100%;
+  height: 30px;
+  resize: none;
+  text-align: center;
+  font-size: 14px;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  margin-top: 10px;
+}
+
+.angleRvalueCali, .angleLvalueCali {
+  width: 50px;
+  height: 30px;
+  text-align: center;
+  border: 2px solid #ccc;
+  border-radius: 3px;
+  font-size: 14px;
+}
+
+.buttonCalibration {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  background-color: #f0f0f0;
+}
+
+.Nextbutton, .Backbutton {
+  width: 60px;
+  height: 40px;
+  font-size: 16px;
+  margin: 10px;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  background-color: #f0f0f0;
+}
+  

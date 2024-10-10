@@ -47,6 +47,38 @@
         <div class="angleR"><button class = "buttonGripper" onclick = "buttonGripperRight()"><p id="textangleRight" style="margin:0px 0px";>Right</p></button></div>
         <div class="angleLvalue"><p id="textangleL" style="margin:0px 0px";></p></div>
         <div class="angleRvalue"><p id="textangleR" style="margin:0px 0px";></p></div>
+        <div class = "GripperCalibration" id = "GripperCalibration">
+            <button class = "buttonGripperCalibration" onclick = "GripperCalibration()"><p id = "textGripperCalibration" style="margin:0px 0px";>Gripper Calibration</p></button>
+        </div>
+        <div id="tab1" class="contentCalibration" style="display:none;">
+            <div class = "containerCalibration">
+                <div class="grid-containerCalibration">
+                    <div class="angleLCali"><p id="angleLeft" style="margin:0px 0px";>Left</p></div>
+                    <div class="angleCali"><p id="textangleCali" style="margin:0px 0px";>Gripper</p></div>
+                    <div class="angleRCali"><p id="angleRight" style="margin:0px 0px";>Right</p></div>
+                    
+                    <textarea  class="TextArea" id="textareaCali" readonly=""></textarea>
+            
+                    <input class="angleRvalueCali" id = "angleRvalueCali" type="text" value="0" readonly>
+                    <input class="angleLvalueCali" id = "angleLvalueCali" type="text" value="0" readonly>
+            
+                    <button class="L0decrement buttonCalibration"   id="L0decrement">-</button>
+                    <button class="L0increment buttonCalibration"   id="L0increment">+</button>
+            
+                    <button class="R0decrement buttonCalibration"   id="R0decrement">-</button>
+                    <button class="R0increment buttonCalibration"   id="R0increment">+</button>
+            
+                    <button class="L90decrement buttonCalibration" style="display:none;"  id="L90decrement">-</button>
+                    <button class="L90increment buttonCalibration" style="display:none;"  id="L90increment">+</button>
+            
+                    <button class="R90decrement buttonCalibration" style="display:none;"  id="R90decrement">-</button>
+                    <button class="R90increment buttonCalibration" style="display:none;" id="R90increment">+</button>
+            
+                    <button class="Nextbutton buttonCalibration" id = "Next" onclick="Next()" >Next</button>
+                    <button class="Backbutton buttonCalibration" id = "Backbutton" onclick="Back()" >Back</button>
+                </div>
+            </div>
+        </div>  
         <div class="grid-item ir4L" id="ir4L">
             <p style="margin:0px 0px";>ir4L<br>0</p>
         </div>
@@ -130,5 +162,5 @@
     <p><a href="https://git.pythaverse.space/quang.dinh/LeanbotDistributors/blob/master/Leanbot_Testing/Leanbot_Standard/code/Leanbot_Standard_test.ino">Leanbot Code</a></p>
 </body>
 <script src="//cdnjs.cloudflare.com/ajax/libs/annyang/2.4.0/annyang.min.js"></script>
-<script type = "text/javascript" src="scripts.js"></script>
+<script type = "text/javascript" src="scriptcopy.js"></script>
 </html>
