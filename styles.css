@@ -678,6 +678,9 @@ body {
 @media screen and (orientation: portrait) {
   .contentCalibration {
     width: 100%;
-    height: 50%;
+    height: 60%;
+  }
+  #textareaCali{
+    height: 50px;
   }
 }
