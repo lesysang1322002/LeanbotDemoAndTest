@@ -52,12 +52,14 @@ navigator.bluetooth.requestDevice({
     }
     });
 }}
+
 function disconnect()
 {
     logstatus("SCAN to connect");
     console.log("Disconnected from: " + dev.name);
     return dev.gatt.disconnect();
 }
+
 function onDisconnected(event) {
     const device = event.target;
     resetPageColor();
@@ -122,6 +124,7 @@ function toggleFunction() {
         resetPageColor();
     }
 }
+
 function resetPageColor(){
     checkmessage=false;
     checkpopup = false;

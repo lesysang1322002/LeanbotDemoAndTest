@@ -51,7 +51,6 @@
             <button class = "buttonGripperCalibration" onclick = "GripperCalibration()"><p id = "textGripperCalibration" style="margin:0px 0px";>Gripper Calibration</p></button>
         </div>
         <div id="tab1" class="contentCalibration" style="display:none;">
-            <div class = "containerCalibration">
                 <div class="grid-containerCalibration">
                     <div class="angleLCali"><p id="angleLeft" style="margin:0px 0px";>Left</p></div>
                     <div class="angleCali"><p id="textangleCali" style="margin:0px 0px";>Gripper</p></div>
@@ -62,22 +61,35 @@
                     <input class="angleRvalueCali" id = "angleRvalueCali" type="text" value="0" readonly>
                     <input class="angleLvalueCali" id = "angleLvalueCali" type="text" value="0" readonly>
             
-                    <button class="L0decrement buttonCalibration"   id="L0decrement">-</button>
-                    <button class="L0increment buttonCalibration"   id="L0increment">+</button>
+                    <button class="L0decrement buttonCalibration"   id="L0decrement">-1</button>
+                    <button class="L0increment buttonCalibration"   id="L0increment">+1</button>
             
-                    <button class="R0decrement buttonCalibration"   id="R0decrement">-</button>
-                    <button class="R0increment buttonCalibration"   id="R0increment">+</button>
+                    <button class="R0decrement buttonCalibration"   id="R0decrement">-1</button>
+                    <button class="R0increment buttonCalibration"   id="R0increment">+1</button>
+
+                    <button class="L0_5decrement buttonCalibration"   id="L0_5decrement">-5</button>
+                    <button class="L0_5increment buttonCalibration"   id="L0_5increment">+5</button>
             
-                    <button class="L90decrement buttonCalibration" style="display:none;"  id="L90decrement">-</button>
-                    <button class="L90increment buttonCalibration" style="display:none;"  id="L90increment">+</button>
+                    <button class="R0_5decrement buttonCalibration"   id="R0_5decrement">-5</button>
+                    <button class="R0_5increment buttonCalibration"   id="R0_5increment">+5</button>
             
-                    <button class="R90decrement buttonCalibration" style="display:none;"  id="R90decrement">-</button>
-                    <button class="R90increment buttonCalibration" style="display:none;" id="R90increment">+</button>
+                    <button class="L90decrement buttonCalibration" style="display:none;"  id="L90decrement">-1</button>
+                    <button class="L90increment buttonCalibration" style="display:none;"  id="L90increment">+1</button>
             
-                    <button class="Nextbutton buttonCalibration" id = "Next" onclick="Next()" >Next</button>
-                    <button class="Backbutton buttonCalibration" id = "Backbutton" onclick="Back()" >Back</button>
+                    <button class="R90decrement buttonCalibration" style="display:none;"  id="R90decrement">-1</button>
+                    <button class="R90increment buttonCalibration" style="display:none;"  id="R90increment">+1</button>
+
+                    <button class="L90_5decrement buttonCalibration" style="display:none;"  id="L90_5decrement">-5</button>
+                    <button class="L90_5increment buttonCalibration" style="display:none;"  id="L90_5increment">+5</button>
+            
+                    <button class="R90_5decrement buttonCalibration" style="display:none;"  id="R90_5decrement">-5</button>
+                    <button class="R90_5increment buttonCalibration" style="display:none;"  id="R90_5increment" >+5</button>
+            
+            
+                    <button class="Nextbutton buttonCalibration"   id = "Next" onclick = "Next()" >Next</button>
+                    <button class="Backbutton buttonCalibration"   style="display:block;" id = "Backbutton" onclick="Back()" >Back</button>
+                    <button class="Cancelbutton buttonCalibration" style="display:block;" id = "Cancelbutton" onclick="Cancel()" >Cancel</button>
                 </div>
-            </div>
         </div>  
         <div class="grid-item ir4L" id="ir4L">
             <p style="margin:0px 0px";>ir4L<br>0</p>

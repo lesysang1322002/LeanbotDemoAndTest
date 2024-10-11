@@ -36,7 +36,7 @@ navigator.bluetooth.requestDevice({
     })
     .then(characteristic => {
         logstatus(dev.name);
-        // checkMessageWithin5Seconds();
+        checkMessageWithin5Seconds();
         document.getElementById("buttonText").innerText = "Rescan";
         gattCharacteristic = characteristic
         gattCharacteristic.addEventListener('characteristicvaluechanged', handleChangedValue)
@@ -117,6 +117,7 @@ function toggleFunction() {
     if (button.innerText == "Scan") {
         requestBluetoothDevice();
     } else {
+        tab1.style.display = "none";
         disconnect();
         requestBluetoothDevice();
         resetPageColor();
@@ -184,7 +185,7 @@ function resetPageColor(){
     threshold = Array(8).fill(map(100, 0, 768, 0, 255));
     checkTestObjectDemo = false;
     textGripperCalibration.style.color = "#CCCCCC";
-    checkMessageCalibration = false;
+    checkCalibrationGripper = false;
 }
 
 if(!checkmessage){
@@ -255,7 +256,7 @@ let Rvalue = document.getElementById('angleRvalueCali');
 let Text_Area = document.getElementById('textareaCali');
 let angleLvalue, angleRvalue;
 let textButtonGripperCalibration = document.getElementById('textGripperCalibration');
-let checkMessageCalibration = false;
+let checkCalibrationGripper = false;
 // End Initial Gripper Calibration
 
 function handleChangedValue(event) {
@@ -269,228 +270,229 @@ function handleChangedValue(event) {
         arrString = string.split(/[ \t\r\n]+/);
         //Calibration Gripper
         let stringcheck = string[0] + string[1] + string[2] + string[3] + string[4];
-        if (stringcheck === "GetCa") {
-            console.log("StringCalibration: " + string);
-            checkMessageCalibration = true;
-            handleAction(',Step1');
-            let commaIndices = [];
-            for (let i = 0; i < string.length; i++) {
-                if (string[i] === ',') {
-                    commaIndices.push(i);
+        if(checkCalibrationGripper){
+            if (stringcheck === "GetCa") {
+                console.log("StringCalibration: " + string);
+                handleAction(',Step1');
+                let commaIndices = [];
+                for (let i = 0; i < string.length; i++) {
+                    if (string[i] === ',') {
+                        commaIndices.push(i);
+                    }
+                }
+                let leftBracketIndex = string.indexOf('(');
+                let rightBracketIndex = string.indexOf(')');
+                old00L = string.substring(leftBracketIndex + 1, commaIndices[0]);
+                old90L = string.substring(commaIndices[0] + 2, commaIndices[1]);
+                old00R = string.substring(commaIndices[1] + 2, commaIndices[2]);
+                old90R = string.substring(commaIndices[2] + 2, rightBracketIndex);
+                console.log("Gripper: " + old00L + "," + old90L + "," + old00R + "," + old90R);
+            }
+            if(arrString[0] === "degL" && arrString[3] === "degR"){
+                angleLvalue = arrString[2];
+                angleRvalue = arrString[5];
+
+                if(angleLvalue !== Lvalue.value || angleRvalue !== Rvalue.value){
+                    alert('WRONG MESSAGE!');
                 }
             }
-            let leftBracketIndex = string.indexOf('(');
-            let rightBracketIndex = string.indexOf(')');
-            old00L = string.substring(leftBracketIndex + 1, commaIndices[0]);
-            old90L = string.substring(commaIndices[0] + 2, commaIndices[1]);
-            old00R = string.substring(commaIndices[1] + 2, commaIndices[2]);
-            old90R = string.substring(commaIndices[2] + 2, rightBracketIndex);
-            console.log("Gripper: " + old00L + "," + old90L + "," + old00R + "," + old90R);
-        }
-        if (checkMessageCalibration) {
-        if(arrString[0] === "degL" && arrString[3] === "degR"){
-            angleLvalue = arrString[2];
-            angleRvalue = arrString[5];
-
-            if(angleLvalue !== Lvalue.value || angleRvalue !== Rvalue.value){
-                alert('WRONG MESSAGE!');
+            else if(arrString[0] === 'TB1A'){
+                Text_Area.value = `TB1A + TB1B touched. Calibration settings saved. Calibration Done. Please Rescan Leanbot`;
+                Backbutton.style.display = "none";
+                Cancelbutton.style.display = "none";
             }
-        }
-        else if(arrString[0] === 'TB1A'){
-            Text_Area.value = `TB1A + TB1B touched. Calibration settings saved. Calibration Done.`;
-            console.log("Calibration Done " + string);
-        }
-        else if(string[0] === 'O'){
-            Step1();
-        }
-        else if(string[0] === 'C'){
-            Step2();
-        }
-        else if(stringcheck === 'SetCa'){
-            Step3();
-            console.log("Step3:" + string);
-        }
-        else if(arrString[0] === 'Touch'){
-            Step4();
-            console.log("Step4:" + string);
-        }
+            else if(string[0] === 'O'){
+                Step1();
+            }
+            else if(string[0] === 'C'){
+                Step2();
+            }
+            else if(stringcheck === 'SetCa'){
+                Step3();
+                console.log("Step3:" + string);
+            }
+            else if(arrString[0] === 'Touch'){
+                Step4();
+                console.log("Step4:" + string);
+            }
         }
         // End Calibration Gripper
-
-        if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
-            console.log("Message correct.");
-            send(".RemoteControl");
-            checkmessage = true;
-            clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
-            distanceValue.style.color = "black";
-            textangle.style.color = "black";
-            textangleLeft.style.color = "black";
-            textangleRight.style.color = "black";
-            testIRLineCalibration.style.color = "black";
-            buttonsTest.forEach(item => {
-                item.style.color = "black";
-            });
-            gridItems.forEach(item => {
-                item.style.removeProperty("color");
-            });
-            textGripperCalibration.style.color = "black";
-        }
-
-        let s = string.length;
-        stringfill = string.substring(0,s-2);
-        // console.log("Stringfill: " + stringfill);
-        UpdateBorderButtonDemo();
-
-        if(arrString[0] == "TB" && checkmessage){
-
-            TB1A = parseInt(string[3]);                          checkArray[0]=TB1A;
-            TB1B = parseInt(string[4]);                          checkArray[1]=TB1B;
-            TB2A = parseInt(string[5]);                          checkArray[2]=TB2A;
-            TB2B = parseInt(string[6]);                          checkArray[3]=TB2B;
-            ir6L = compareThreshold(0);     checkArray[4]=ir6L;
-            ir4L = compareThreshold(1);     checkArray[5]=ir4L;
-            ir2L = compareThreshold(2);     checkArray[6]=ir2L;
-            ir0L = compareThreshold(3);     checkArray[7]=ir0L;
-            ir1R = compareThreshold(4);     checkArray[8]=ir1R;
-            ir3R = compareThreshold(5);     checkArray[9]=ir3R;
-            ir5R = compareThreshold(6);     checkArray[10]=ir5R;
-            ir7R = compareThreshold(7);     checkArray[11]=ir7R;
-
-            
-            lineState = ir2L.toString() + ir0L.toString() + ir1R.toString() + ir3R.toString();
-
-            if(lineState === '1111' || lineState === '0000'){
-                testFollowline.style.color = "#CCCCCC";
-            }
-            else{
-                testFollowline.style.color = "green";
-                if(checkAlertFollowLine){
-                    AlertFollowLine.style.display = 'none';
-                    checkClickDone = false;
-                    runTest(
-                        "Followline",
-                        [
-                          ".LineFollow",
-                          toStr(threshold[2], 3),
-                          toStr(threshold[3], 3),
-                          toStr(threshold[4], 3),
-                          toStr(threshold[5], 3),
-                        ].join(' ')
-                    );
-                    checkAlertFollowLine = false;
-                }
-            }
-            
-            for (let i = 0; i < 4; i++) {
-                let element = document.getElementById(elementIds[i]);
-                let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
-            
-                if (checkArray[i] === 1 && checkCoutTouch[i]) {
-                    checkCoutTouch[i] = false;
-                    CountTouch[i]++;
-                    paragraph.innerHTML = elementIds[i] + "<br>" + CountTouch[i];
-                }
-                else if(checkArray[i] === 0){
-                    checkCoutTouch[i] = true;
-                }
-                if(CountTouch[i] === 1){
-                    element.style.border = "3px solid orange";
-                }
-                else if(CountTouch[i] === 3){
-                    element.style.border = "3px solid green";
-                    checksum[i] = 1;
-                }
+        else{
+            if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
+                console.log("Message correct.");
+                send(".RemoteControl");
+                checkmessage = true;
+                clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
+                distanceValue.style.color  = "black";
+                textangle.style.color      = "black";
+                textangleLeft.style.color  = "black";
+                textangleRight.style.color = "black";
+                testIRLineCalibration.style.color = "black";
+                buttonsTest.forEach(item => {
+                    item.style.color = "black";
+                });
+                gridItems.forEach(item => {
+                    item.style.removeProperty("color");
+                });
+                textGripperCalibration.style.color = "black";
             }
 
-            for (let i = 4; i < 12; i++) {
-                let element = document.getElementById(elementIds[i]);
-                let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
+            let s = string.length;
+            stringfill = string.substring(0,s-2);
+            // console.log("Stringfill: " + stringfill);
+            UpdateBorderButtonDemo();
 
-                paragraph.innerHTML = elementIds[i] + "<br>" + arrString[i + 1];
-            }
-            // Comment chuyển màu viền của Touch
-            for (let i = 4; i < elementIds.length; i++) {
-                let element = document.getElementById(elementIds[i]);
+            if(arrString[0] == "TB" && checkmessage){
+
+                TB1A = parseInt(string[3]);                          checkArray[0]=TB1A;
+                TB1B = parseInt(string[4]);                          checkArray[1]=TB1B;
+                TB2A = parseInt(string[5]);                          checkArray[2]=TB2A;
+                TB2B = parseInt(string[6]);                          checkArray[3]=TB2B;
+                ir6L = compareThreshold(0);     checkArray[4]=ir6L;
+                ir4L = compareThreshold(1);     checkArray[5]=ir4L;
+                ir2L = compareThreshold(2);     checkArray[6]=ir2L;
+                ir0L = compareThreshold(3);     checkArray[7]=ir0L;
+                ir1R = compareThreshold(4);     checkArray[8]=ir1R;
+                ir3R = compareThreshold(5);     checkArray[9]=ir3R;
+                ir5R = compareThreshold(6);     checkArray[10]=ir5R;
+                ir7R = compareThreshold(7);     checkArray[11]=ir7R;
+
                 
-                handleBorderChange(i, element, check1, Lastcommand1, Timeout1, 1);
-                handleBorderChange(i, element, check0, Lastcommand0, Timeout0, 0);
+                lineState = ir2L.toString() + ir0L.toString() + ir1R.toString() + ir3R.toString();
+
+                if(lineState === '1111' || lineState === '0000'){
+                    testFollowline.style.color = "#CCCCCC";
+                }
+                else{
+                    testFollowline.style.color = "green";
+                    if(checkAlertFollowLine){
+                        AlertFollowLine.style.display = 'none';
+                        checkClickDone = false;
+                        runTest(
+                            "Followline",
+                            [
+                            ".LineFollow",
+                            toStr(threshold[2], 3),
+                            toStr(threshold[3], 3),
+                            toStr(threshold[4], 3),
+                            toStr(threshold[5], 3),
+                            ].join(' ')
+                        );
+                        checkAlertFollowLine = false;
+                    }
+                }
+                
+                for (let i = 0; i < 4; i++) {
+                    let element = document.getElementById(elementIds[i]);
+                    let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
+                
+                    if (checkArray[i] === 1 && checkCoutTouch[i]) {
+                        checkCoutTouch[i] = false;
+                        CountTouch[i]++;
+                        paragraph.innerHTML = elementIds[i] + "<br>" + CountTouch[i];
+                    }
+                    else if(checkArray[i] === 0){
+                        checkCoutTouch[i] = true;
+                    }
+                    if(CountTouch[i] === 1){
+                        element.style.border = "3px solid orange";
+                    }
+                    else if(CountTouch[i] === 3){
+                        element.style.border = "3px solid green";
+                        checksum[i] = 1;
+                    }
+                }
+
+                for (let i = 4; i < 12; i++) {
+                    let element = document.getElementById(elementIds[i]);
+                    let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
+
+                    paragraph.innerHTML = elementIds[i] + "<br>" + arrString[i + 1];
+                }
+                // Comment chuyển màu viền của Touch
+                for (let i = 4; i < elementIds.length; i++) {
+                    let element = document.getElementById(elementIds[i]);
+                    
+                    handleBorderChange(i, element, check1, Lastcommand1, Timeout1, 1);
+                    handleBorderChange(i, element, check0, Lastcommand0, Timeout0, 0);
+                
+                    if (check0[i] && check1[i]) {
+                        checksum[i] = 1;
+                        element.style.border = "3px solid green";
+                    }
+                }  
+
+                distance = arrString[14];
+                distanceInt = parseInt(distance); // Chuyển đổi thành số nguyên
+
+                if(distanceInt > 50){
+                    testObjectfollow.style.color = "#CCCCCC";
+                }
+                else{
+                    if(checkTestObjectDemo){
+                        alertBox.style.display = 'none';
+                        checkClickDone = false;
+                        runTest("Objectfollow",".Objectfollow");
+                        checkTestObjectDemo = false;
+                    }
+                    testObjectfollow.style.color = "green";
+                }
+
+                angleL = arrString[18];
+                angleR = arrString[19];
+                angleLValue.textContent = `${angleL}°`;
+                angleRValue.textContent = `${angleR}°`;
+
+                Updateallbackground(); 
+
+                if(!check10cm){
+                    if(distance == '10'){
+                        element10cm.style.color = "orange";
+                    if(Lastcommand10cm){
+                    Timeout10cm = setTimeout(() => {
+                        element10cm.style.color = "green";
+                        check10cm=true;
+                    }, 3000);
+                    }
+                    Lastcommand10cm = false;
+                    }
+                    else{
+                        element10cm.style.color = "#CCCCCC";
+                        clearTimeout(Timeout10cm);
+                        Lastcommand10cm=true;   
+                    }
+                }
             
-                if (check0[i] && check1[i]) {
-                    checksum[i] = 1;
-                    element.style.border = "3px solid green";
+                if(!check30cm){
+                    if(distance == '30'){
+                        element30cm.style.color = "orange";
+                    if(Lastcommand30cm){
+                    Timeout30cm = setTimeout(() => {
+                        element30cm.style.color = "green";
+                        check30cm=true;
+                    }, 3000);
+                    }
+                    Lastcommand30cm=false;
+                    }
+                    else{
+                        element30cm.style.color = "#CCCCCC";
+                        clearTimeout(Timeout30cm);
+                        Lastcommand30cm=true;   
+                    }
                 }
-            }  
-
-            distance = arrString[14];
-            distanceInt = parseInt(distance); // Chuyển đổi thành số nguyên
-
-            if(distanceInt > 50){
-                testObjectfollow.style.color = "#CCCCCC";
+                if(check10cm && check30cm){
+                    distanceValue.style.color = "green";
+                    slidercontainer.style.border = "3px solid green ";
+                }
+                if (distance === "1000") {
+                    distanceValue.textContent="HC-SR04 Ultrasonic distance";
+                    distanceValue.style.fontSize = "13px";
+                } else {
+                    distanceValue.textContent = `${distance} cm`;
+                    distanceValue.style.fontSize = "20px";
+                }
+                slider.value = distance;
             }
-            else{
-                if(checkTestObjectDemo){
-                    alertBox.style.display = 'none';
-                    checkClickDone = false;
-                    runTest("Objectfollow",".Objectfollow");
-                    checkTestObjectDemo = false;
-                }
-                testObjectfollow.style.color = "green";
-            }
-
-            angleL = arrString[18];
-            angleR = arrString[19];
-            angleLValue.textContent = `${angleL}°`;
-            angleRValue.textContent = `${angleR}°`;
-
-            Updateallbackground(); 
-
-            if(!check10cm){
-                if(distance == '10'){
-                    element10cm.style.color = "orange";
-                if(Lastcommand10cm){
-                Timeout10cm = setTimeout(() => {
-                    element10cm.style.color = "green";
-                    check10cm=true;
-                }, 3000);
-                }
-                Lastcommand10cm = false;
-                }
-                else{
-                    element10cm.style.color = "#CCCCCC";
-                    clearTimeout(Timeout10cm);
-                    Lastcommand10cm=true;   
-                }
-            }
-        
-            if(!check30cm){
-                if(distance == '30'){
-                    element30cm.style.color = "orange";
-                if(Lastcommand30cm){
-                Timeout30cm = setTimeout(() => {
-                    element30cm.style.color = "green";
-                    check30cm=true;
-                }, 3000);
-                }
-                Lastcommand30cm=false;
-                }
-                else{
-                    element30cm.style.color = "#CCCCCC";
-                    clearTimeout(Timeout30cm);
-                    Lastcommand30cm=true;   
-                }
-            }
-            if(check10cm && check30cm){
-                distanceValue.style.color = "green";
-                slidercontainer.style.border = "3px solid green ";
-            }
-            if (distance === "1000") {
-                distanceValue.textContent="HC-SR04 Ultrasonic distance";
-                distanceValue.style.fontSize = "13px";
-              } else {
-                distanceValue.textContent = `${distance} cm`;
-                distanceValue.style.fontSize = "20px";
-              }
-            slider.value = distance;
         }
         string="";
     }
@@ -678,6 +680,7 @@ let checkClickDone = false;
     // Thực hiện send và đổi màu viền khi click
 function runTest(component, command){
     if(checkmessage && !checkClickDone){
+        console.log("Command: " + command);
         send(command);
         element = document.getElementById("test" + component);
         element.style.border = "3px solid orange";
@@ -708,24 +711,34 @@ function buttonGripperRight(){
 
 // Calibration  Gripper
 function GripperCalibration() {
+    if(checkmessage){
     if (tab1.style.display === "none" || tab1.style.display === "") {
         tab1.style.display = "block";  // Show the element if it's hidden
+        resetPageColor();
+        document.getElementById("buttonText").innerText = "Rescan";
         send(',GripperCalibration');
+        checkCalibrationGripper = true;
+        checkClickDone = true;
     } else {
         tab1.style.display = "none";   // Hide the element if it's visible
+    }
     }
 }
 
 
 document.addEventListener('DOMContentLoaded', function() {
     const buttonSets = [
-      { decrement: '.L0decrement', increment: '.L0increment', input: '.angleLvalueCali' },
-      { decrement: '.R0decrement', increment: '.R0increment', input: '.angleRvalueCali'},
-      { decrement: '.L90decrement', increment: '.L90increment', input: '.angleLvalueCali'},
-      { decrement: '.R90decrement', increment: '.R90increment', input: '.angleRvalueCali'}
+      { decrement: '.L0decrement', increment: '.L0increment', input: '.angleLvalueCali', step: 1 },
+      { decrement: '.R0decrement', increment: '.R0increment', input: '.angleRvalueCali', step: 1 },
+      { decrement: '.L90decrement', increment: '.L90increment', input: '.angleLvalueCali', step: 1 },
+      { decrement: '.R90decrement', increment: '.R90increment', input: '.angleRvalueCali', step: 1 },
+      { decrement: '.L0_5decrement', increment: '.L0_5increment', input: '.angleLvalueCali', step: 5 },
+      { decrement: '.R0_5decrement', increment: '.R0_5increment', input: '.angleRvalueCali', step: 5 },
+      { decrement: '.L90_5decrement', increment: '.L90_5increment', input: '.angleLvalueCali', step: 5 },
+      { decrement: '.R90_5decrement', increment: '.R90_5increment', input: '.angleRvalueCali', step: 5 },
     ];
   
-    buttonSets.forEach(({ decrement, increment, input}) => {
+    buttonSets.forEach(({ decrement, increment, input, step}) => {
       const decrementBtn = document.querySelector(decrement);
       const incrementBtn = document.querySelector(increment);
       const quantityInput = document.querySelector(input);
@@ -760,13 +773,13 @@ document.addEventListener('DOMContentLoaded', function() {
       
       function decrementValue(event) {
         let currentValue = parseInt(quantityInput.value);
-        quantityInput.value = currentValue - 1;
+        quantityInput.value = currentValue - step;
         sendLR();
       }
   
       function incrementValue(event) {
         let currentValue = parseInt(quantityInput.value);
-        quantityInput.value = currentValue + 1;
+        quantityInput.value = currentValue + step;
         sendLR();
       }
     });
@@ -783,6 +796,7 @@ function sendLR(){
 let Step = 0;
 
 function Next() {
+    console.log("Step: " + Step);
     if(Step == 1){
         handleAction(',Step2');
     }
@@ -801,9 +815,10 @@ function Step1(){
     Rvalue.value = old00R;
     Lvalue.value = old00L;
     sendLR();
-    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement"], "block");
-    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement"], "none");
-    toggleDisplayForElements(["Backbutton"], "block");
+    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement",
+                            "R0_5increment", "R0_5decrement", "L0_5increment", "L0_5decrement"], "block");
+    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
+                            "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement"], "none");
     toggleDisplayForElements(["Next"], "block");
 }
 
@@ -811,8 +826,10 @@ function Step2(){
     Step = 2;
     document.getElementById("Next").innerText = "Next";
     Text_Area.value = "Step 2/4: Adjust both gripper arms to proper 90° position (pointing horizontally)";
-    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement"], "block");
-    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement"], "none");
+    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
+                               "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement" ], "block");
+    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement", 
+                              "R0_5increment", "R0_5decrement", "L0_5increment", "L0_5decrement"], "none");
     Rvalue.value = old90R;
     Lvalue.value = old90L;
     sendLR();
@@ -822,14 +839,14 @@ function Step3(){
     Step = 3;
     document.getElementById("Next").innerText = "Save";
     Text_Area.value = "Step 3/4: Observe gripper open and close correctly";
-    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement"], "none");
+    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
+                              "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement" ], "none");
 }
 
 function Step4(){
     Step = 4;
     Text_Area.value = "Step 4/4: Touch TB1A + TB1B to permanently save calibration settings";
     document.getElementById("Next").innerText = "Done";
-    toggleDisplayForElements(["Backbutton"], "none");
     toggleDisplayForElements(["Next"], "none");
 }
 
@@ -844,11 +861,20 @@ function toggleDisplayForElements(elementIds, displayValue) {
 
 function Back() {
     if(Step == 3){
-        handleAction('Step2');
+        handleAction(',Step2');
     }
     else if(Step == 2){
-        handleAction('Step1');
+        handleAction(',Step1');
     }
+    else if(Step == 4){
+        handleAction(',Step3');
+    }
+}
+
+function Cancel(){
+    tab1.style.display = "none";
+    checkCalibrationGripper = false;
+    checkClickDone = false;
 }
 
 let MarioRTTTL = "mario:d=4,o=5,b=100:16e6,16e6,32p,8e6,16c6,8e6,8g6,8p,8g,8p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a5,16f6,8g6,8e6,16c6,16d6,8b,16p,8c6,16p,8g,16p,8e,16p,8a,8b,16a#,8a,16g.,16e6,16g6,8a5,16f6,8g6,8e6,16c6,16d6,8b,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16c7,16p,16c7,16c7,p,16g6,16f#6,16f6,16d#6,16p,16e6,16p,16g#,16a,16c6,16p,16a,16c6,16d6,8p,16d#6,8p,16d6,8p,16c6";
