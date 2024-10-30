@@ -231,7 +231,7 @@ for(let i = 0 ; i < 12; i++){
     check1[i] = false;
 }
 let checksum = []; 
-let string="";
+// let string="";
 let stringfill;
 let lineState="";
 let stringcheck="";
@@ -259,252 +259,491 @@ let textButtonGripperCalibration = document.getElementById('textGripperCalibrati
 let checkCalibrationGripper = false;
 // End Initial Gripper Calibration
 
-function handleChangedValue(event) {
-    let data = event.target.value;
-    let dataArray = new Uint8Array(data.buffer);
-    let textDecoder = new TextDecoder('utf-8');
-    let valueString = textDecoder.decode(dataArray);
-    let n = valueString.length;
-    if(valueString[n-1] == '\n'){
-        string += valueString;
-        arrString = string.split(/[ \t\r\n]+/);
-        //Calibration Gripper
-        let stringcheck = string[0] + string[1] + string[2] + string[3] + string[4];
-        if(checkCalibrationGripper){
-            if (stringcheck === "GetCa") {
-                console.log("StringCalibration: " + string);
-                handleAction(',Step1');
-                let commaIndices = [];
-                for (let i = 0; i < string.length; i++) {
-                    if (string[i] === ',') {
-                        commaIndices.push(i);
-                    }
-                }
-                let leftBracketIndex = string.indexOf('(');
-                let rightBracketIndex = string.indexOf(')');
-                old00L = string.substring(leftBracketIndex + 1, commaIndices[0]);
-                old90L = string.substring(commaIndices[0] + 2, commaIndices[1]);
-                old00R = string.substring(commaIndices[1] + 2, commaIndices[2]);
-                old90R = string.substring(commaIndices[2] + 2, rightBracketIndex);
-                console.log("Gripper: " + old00L + "," + old90L + "," + old00R + "," + old90R);
-            }
-            if(arrString[0] === "degL" && arrString[3] === "degR"){
-                angleLvalue = arrString[2];
-                angleRvalue = arrString[5];
+// function handleChangedValue(event) {
+//     let data = event.target.value;
+//     let dataArray = new Uint8Array(data.buffer);
+//     let textDecoder = new TextDecoder('utf-8');
+//     let valueString = textDecoder.decode(dataArray);
+//     let n = valueString.length;
+//     if(valueString[n-1] == '\n'){
+//         string += valueString;
+//         arrString = string.split(/[ \t\r\n]+/);
+//         //Calibration Gripper
+//         let stringcheck = string[0] + string[1] + string[2] + string[3] + string[4];
+//         if(checkCalibrationGripper){
+//             if (stringcheck === "GetCa") {
+//                 console.log("StringCalibration: " + string);
+//                 handleAction(',Step1');
+//                 let commaIndices = [];
+//                 for (let i = 0; i < string.length; i++) {
+//                     if (string[i] === ',') {
+//                         commaIndices.push(i);
+//                     }
+//                 }
+//                 let leftBracketIndex = string.indexOf('(');
+//                 let rightBracketIndex = string.indexOf(')');
+//                 old00L = string.substring(leftBracketIndex + 1, commaIndices[0]);
+//                 old90L = string.substring(commaIndices[0] + 2, commaIndices[1]);
+//                 old00R = string.substring(commaIndices[1] + 2, commaIndices[2]);
+//                 old90R = string.substring(commaIndices[2] + 2, rightBracketIndex);
+//                 console.log("Gripper: " + old00L + "," + old90L + "," + old00R + "," + old90R);
+//             }
+//             if(arrString[0] === "degL" && arrString[3] === "degR"){
+//                 angleLvalue = arrString[2];
+//                 angleRvalue = arrString[5];
 
-                if(angleLvalue !== Lvalue.value || angleRvalue !== Rvalue.value){
-                    alert('WRONG MESSAGE!');
-                }
-            }
-            else if(arrString[0] === 'TB1A'){
-                Text_Area.value = `TB1A + TB1B touched. Calibration settings saved. Calibration Done. Please Rescan Leanbot`;
-                Backbutton.style.display = "none";
-                Cancelbutton.style.display = "none";
-            }
-            else if(string[0] === 'O'){
-                Step1();
-            }
-            else if(string[0] === 'C'){
-                Step2();
-            }
-            else if(stringcheck === 'SetCa'){
-                Step3();
-                console.log("Step3:" + string);
-            }
-            else if(arrString[0] === 'Touch'){
-                Step4();
-                console.log("Step4:" + string);
-            }
-        }
-        // End Calibration Gripper
-        else{
-            if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
-                console.log("Message correct.");
-                send(".RemoteControl");
-                checkmessage = true;
-                clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
-                distanceValue.style.color  = "black";
-                textangle.style.color      = "black";
-                textangleLeft.style.color  = "black";
-                textangleRight.style.color = "black";
-                testIRLineCalibration.style.color = "black";
-                buttonsTest.forEach(item => {
-                    item.style.color = "black";
-                });
-                gridItems.forEach(item => {
-                    item.style.removeProperty("color");
-                });
-                textGripperCalibration.style.color = "black";
-            }
+//                 if(angleLvalue !== Lvalue.value || angleRvalue !== Rvalue.value){
+//                     alert('WRONG MESSAGE!');
+//                 }
+//             }
+//             else if(arrString[0] === 'TB1A'){
+//                 Text_Area.value = `TB1A + TB1B touched. Calibration settings saved. Calibration Done. Please Rescan Leanbot`;
+//                 Backbutton.style.display = "none";
+//                 Cancelbutton.style.display = "none";
+//             }
+//             else if(string[0] === 'O'){
+//                 Step1();
+//             }
+//             else if(string[0] === 'C'){
+//                 Step2();
+//             }
+//             else if(stringcheck === 'SetCa'){
+//                 Step3();
+//                 console.log("Step3:" + string);
+//             }
+//             else if(arrString[0] === 'Touch'){
+//                 Step4();
+//                 console.log("Step4:" + string);
+//             }
+//         }
+//         // End Calibration Gripper
+//         else{
+//             if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
+//                 console.log("Message correct.");
+//                 send(".RemoteControl");
+//                 checkmessage = true;
+//                 clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
+//                 distanceValue.style.color  = "black";
+//                 textangle.style.color      = "black";
+//                 textangleLeft.style.color  = "black";
+//                 textangleRight.style.color = "black";
+//                 testIRLineCalibration.style.color = "black";
+//                 buttonsTest.forEach(item => {
+//                     item.style.color = "black";
+//                 });
+//                 gridItems.forEach(item => {
+//                     item.style.removeProperty("color");
+//                 });
+//                 textGripperCalibration.style.color = "black";
+//             }
 
-            let s = string.length;
-            stringfill = string.substring(0,s-2);
-            // console.log("Stringfill: " + stringfill);
-            UpdateBorderButtonDemo();
+//             let s = string.length;
+//             stringfill = string.substring(0,s-2);
+//             // console.log("Stringfill: " + stringfill);
+//             UpdateBorderButtonDemo();
 
-            if(arrString[0] == "TB" && checkmessage){
+//             if(arrString[0] == "TB" && checkmessage){
 
-                TB1A = parseInt(string[3]);                          checkArray[0]=TB1A;
-                TB1B = parseInt(string[4]);                          checkArray[1]=TB1B;
-                TB2A = parseInt(string[5]);                          checkArray[2]=TB2A;
-                TB2B = parseInt(string[6]);                          checkArray[3]=TB2B;
-                ir6L = compareThreshold(0);     checkArray[4]=ir6L;
-                ir4L = compareThreshold(1);     checkArray[5]=ir4L;
-                ir2L = compareThreshold(2);     checkArray[6]=ir2L;
-                ir0L = compareThreshold(3);     checkArray[7]=ir0L;
-                ir1R = compareThreshold(4);     checkArray[8]=ir1R;
-                ir3R = compareThreshold(5);     checkArray[9]=ir3R;
-                ir5R = compareThreshold(6);     checkArray[10]=ir5R;
-                ir7R = compareThreshold(7);     checkArray[11]=ir7R;
+//                 TB1A = parseInt(string[3]);                          checkArray[0]=TB1A;
+//                 TB1B = parseInt(string[4]);                          checkArray[1]=TB1B;
+//                 TB2A = parseInt(string[5]);                          checkArray[2]=TB2A;
+//                 TB2B = parseInt(string[6]);                          checkArray[3]=TB2B;
+//                 ir6L = compareThreshold(0);     checkArray[4]=ir6L;
+//                 ir4L = compareThreshold(1);     checkArray[5]=ir4L;
+//                 ir2L = compareThreshold(2);     checkArray[6]=ir2L;
+//                 ir0L = compareThreshold(3);     checkArray[7]=ir0L;
+//                 ir1R = compareThreshold(4);     checkArray[8]=ir1R;
+//                 ir3R = compareThreshold(5);     checkArray[9]=ir3R;
+//                 ir5R = compareThreshold(6);     checkArray[10]=ir5R;
+//                 ir7R = compareThreshold(7);     checkArray[11]=ir7R;
 
                 
-                lineState = ir2L.toString() + ir0L.toString() + ir1R.toString() + ir3R.toString();
+//                 lineState = ir2L.toString() + ir0L.toString() + ir1R.toString() + ir3R.toString();
 
-                if(lineState === '1111' || lineState === '0000'){
-                    testFollowline.style.color = "#CCCCCC";
-                }
-                else{
-                    testFollowline.style.color = "green";
-                    if(checkAlertFollowLine){
-                        AlertFollowLine.style.display = 'none';
-                        checkClickDone = false;
-                        runTest(
-                            "Followline",
-                            [
-                            ".LineFollow",
-                            toStr(threshold[2], 3),
-                            toStr(threshold[3], 3),
-                            toStr(threshold[4], 3),
-                            toStr(threshold[5], 3),
-                            ].join(' ')
-                        );
-                        checkAlertFollowLine = false;
-                    }
-                }
+//                 if(lineState === '1111' || lineState === '0000'){
+//                     testFollowline.style.color = "#CCCCCC";
+//                 }
+//                 else{
+//                     testFollowline.style.color = "green";
+//                     if(checkAlertFollowLine){
+//                         AlertFollowLine.style.display = 'none';
+//                         checkClickDone = false;
+//                         runTest(
+//                             "Followline",
+//                             [
+//                             ".LineFollow",
+//                             toStr(threshold[2], 3),
+//                             toStr(threshold[3], 3),
+//                             toStr(threshold[4], 3),
+//                             toStr(threshold[5], 3),
+//                             ].join(' ')
+//                         );
+//                         checkAlertFollowLine = false;
+//                     }
+//                 }
                 
-                for (let i = 0; i < 4; i++) {
-                    let element = document.getElementById(elementIds[i]);
-                    let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
+//                 for (let i = 0; i < 4; i++) {
+//                     let element = document.getElementById(elementIds[i]);
+//                     let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
                 
-                    if (checkArray[i] === 1 && checkCoutTouch[i]) {
-                        checkCoutTouch[i] = false;
-                        CountTouch[i]++;
-                        paragraph.innerHTML = elementIds[i] + "<br>" + CountTouch[i];
-                    }
-                    else if(checkArray[i] === 0){
-                        checkCoutTouch[i] = true;
-                    }
-                    if(CountTouch[i] === 1){
-                        element.style.border = "3px solid orange";
-                    }
-                    else if(CountTouch[i] === 3){
-                        element.style.border = "3px solid green";
-                        checksum[i] = 1;
-                    }
-                }
+//                     if (checkArray[i] === 1 && checkCoutTouch[i]) {
+//                         checkCoutTouch[i] = false;
+//                         CountTouch[i]++;
+//                         paragraph.innerHTML = elementIds[i] + "<br>" + CountTouch[i];
+//                     }
+//                     else if(checkArray[i] === 0){
+//                         checkCoutTouch[i] = true;
+//                     }
+//                     if(CountTouch[i] === 1){
+//                         element.style.border = "3px solid orange";
+//                     }
+//                     else if(CountTouch[i] === 3){
+//                         element.style.border = "3px solid green";
+//                         checksum[i] = 1;
+//                     }
+//                 }
 
-                for (let i = 4; i < 12; i++) {
-                    let element = document.getElementById(elementIds[i]);
-                    let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
+//                 for (let i = 4; i < 12; i++) {
+//                     let element = document.getElementById(elementIds[i]);
+//                     let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
 
-                    paragraph.innerHTML = elementIds[i] + "<br>" + arrString[i + 1];
-                }
-                // Comment chuyển màu viền của Touch
-                for (let i = 4; i < elementIds.length; i++) {
-                    let element = document.getElementById(elementIds[i]);
+//                     paragraph.innerHTML = elementIds[i] + "<br>" + arrString[i + 1];
+//                 }
+//                 // Comment chuyển màu viền của Touch
+//                 for (let i = 4; i < elementIds.length; i++) {
+//                     let element = document.getElementById(elementIds[i]);
                     
-                    handleBorderChange(i, element, check1, Lastcommand1, Timeout1, 1);
-                    handleBorderChange(i, element, check0, Lastcommand0, Timeout0, 0);
+//                     handleBorderChange(i, element, check1, Lastcommand1, Timeout1, 1);
+//                     handleBorderChange(i, element, check0, Lastcommand0, Timeout0, 0);
                 
-                    if (check0[i] && check1[i]) {
-                        checksum[i] = 1;
-                        element.style.border = "3px solid green";
-                    }
-                }  
+//                     if (check0[i] && check1[i]) {
+//                         checksum[i] = 1;
+//                         element.style.border = "3px solid green";
+//                     }
+//                 }  
 
-                distance = arrString[14];
-                distanceInt = parseInt(distance); // Chuyển đổi thành số nguyên
+//                 distance = arrString[14];
+//                 distanceInt = parseInt(distance); // Chuyển đổi thành số nguyên
 
-                if(distanceInt > 50){
-                    testObjectfollow.style.color = "#CCCCCC";
-                }
-                else{
-                    if(checkTestObjectDemo){
-                        alertBox.style.display = 'none';
-                        checkClickDone = false;
-                        runTest("Objectfollow",".Objectfollow");
-                        checkTestObjectDemo = false;
-                    }
-                    testObjectfollow.style.color = "green";
-                }
+//                 if(distanceInt > 50){
+//                     testObjectfollow.style.color = "#CCCCCC";
+//                 }
+//                 else{
+//                     if(checkTestObjectDemo){
+//                         alertBox.style.display = 'none';
+//                         checkClickDone = false;
+//                         runTest("Objectfollow",".Objectfollow");
+//                         checkTestObjectDemo = false;
+//                     }
+//                     testObjectfollow.style.color = "green";
+//                 }
 
-                angleL = arrString[18];
-                angleR = arrString[19];
-                angleLValue.textContent = `${angleL}°`;
-                angleRValue.textContent = `${angleR}°`;
+//                 angleL = arrString[18];
+//                 angleR = arrString[19];
+//                 angleLValue.textContent = `${angleL}°`;
+//                 angleRValue.textContent = `${angleR}°`;
 
-                Updateallbackground(); 
+//                 Updateallbackground(); 
 
-                if(!check10cm){
-                    if(distance == '10'){
-                        element10cm.style.color = "orange";
-                    if(Lastcommand10cm){
-                    Timeout10cm = setTimeout(() => {
-                        element10cm.style.color = "green";
-                        check10cm=true;
-                    }, 3000);
-                    }
-                    Lastcommand10cm = false;
-                    }
-                    else{
-                        element10cm.style.color = "#CCCCCC";
-                        clearTimeout(Timeout10cm);
-                        Lastcommand10cm=true;   
-                    }
-                }
+//                 if(!check10cm){
+//                     if(distance == '10'){
+//                         element10cm.style.color = "orange";
+//                     if(Lastcommand10cm){
+//                     Timeout10cm = setTimeout(() => {
+//                         element10cm.style.color = "green";
+//                         check10cm=true;
+//                     }, 3000);
+//                     }
+//                     Lastcommand10cm = false;
+//                     }
+//                     else{
+//                         element10cm.style.color = "#CCCCCC";
+//                         clearTimeout(Timeout10cm);
+//                         Lastcommand10cm=true;   
+//                     }
+//                 }
             
-                if(!check30cm){
-                    if(distance == '30'){
-                        element30cm.style.color = "orange";
-                    if(Lastcommand30cm){
-                    Timeout30cm = setTimeout(() => {
-                        element30cm.style.color = "green";
-                        check30cm=true;
-                    }, 3000);
-                    }
-                    Lastcommand30cm=false;
-                    }
-                    else{
-                        element30cm.style.color = "#CCCCCC";
-                        clearTimeout(Timeout30cm);
-                        Lastcommand30cm=true;   
-                    }
-                }
-                if(check10cm && check30cm){
-                    distanceValue.style.color = "green";
-                    slidercontainer.style.border = "3px solid green ";
-                }
-                if (distance === "1000") {
-                    distanceValue.textContent="HC-SR04 Ultrasonic distance";
-                    distanceValue.style.fontSize = "13px";
-                } else {
-                    distanceValue.textContent = `${distance} cm`;
-                    distanceValue.style.fontSize = "20px";
-                }
-                slider.value = distance;
-            }
+//                 if(!check30cm){
+//                     if(distance == '30'){
+//                         element30cm.style.color = "orange";
+//                     if(Lastcommand30cm){
+//                     Timeout30cm = setTimeout(() => {
+//                         element30cm.style.color = "green";
+//                         check30cm=true;
+//                     }, 3000);
+//                     }
+//                     Lastcommand30cm=false;
+//                     }
+//                     else{
+//                         element30cm.style.color = "#CCCCCC";
+//                         clearTimeout(Timeout30cm);
+//                         Lastcommand30cm=true;   
+//                     }
+//                 }
+//                 if(check10cm && check30cm){
+//                     distanceValue.style.color = "green";
+//                     slidercontainer.style.border = "3px solid green ";
+//                 }
+//                 if (distance === "1000") {
+//                     distanceValue.textContent="HC-SR04 Ultrasonic distance";
+//                     distanceValue.style.fontSize = "13px";
+//                 } else {
+//                     distanceValue.textContent = `${distance} cm`;
+//                     distanceValue.style.fontSize = "20px";
+//                 }
+//                 slider.value = distance;
+//             }
+//         }
+//         string="";
+//     }
+//     else{
+//         string+=valueString;
+//     }
+//     // console.log(checkButtonGreen + checksum + check10cm + check30cm);
+//     if(areAllElementsEqualToOne(checkButtonGreen) && areAllElementsEqualToOne(checksum) && check10cm && check30cm){
+//         navbarTitle.style.color = "green";
+//     }
+// }
+
+let string = "";
+function handleChangedValue(event) {
+    const data = event.target.value;
+    const dataArray = new Uint8Array(data.buffer);
+    const textDecoder = new TextDecoder('utf-8');
+    const valueString = textDecoder.decode(dataArray);
+
+    string += valueString;
+    const lines = string.split(/[\r\n]+/);
+    string = lines.pop() || "";
+    lines.forEach(line => {
+        if (line) { 
+            handleSerialLine(line);
         }
-        string="";
+    });
+}
+
+function handleSerialLine(line) {
+    if (! line) return;
+    console.log("Nano > " + line);
+
+    const arrString = line.split(/[ \t]+/);
+    checkCodefromLeanbot(arrString);
+
+    if (checkCalibrationGripper) {
+        CalibrationGripper_handle(arrString);
+        return;
     }
-    else{
-        string+=valueString;
-    }
-    // console.log(checkButtonGreen + checksum + check10cm + check30cm);
-    if(areAllElementsEqualToOne(checkButtonGreen) && areAllElementsEqualToOne(checksum) && check10cm && check30cm){
-        navbarTitle.style.color = "green";
+    DemoTest_handle(arrString);
+}
+
+function checkCodefromLeanbot(arrString){
+    if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
+        console.log("Message correct.");
+        send(".RemoteControl");
+        checkmessage = true;
+        clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
+        distanceValue.style.color  = "black";
+        textangle.style.color      = "black";
+        textangleLeft.style.color  = "black";
+        textangleRight.style.color = "black";
+        testIRLineCalibration.style.color = "black";
+        buttonsTest.forEach(item => {
+            item.style.color = "black";
+        });
+        gridItems.forEach(item => {
+            item.style.removeProperty("color");
+        });
+        textGripperCalibration.style.color = "black";
     }
 }
 
+function CalibrationGripper_handle(arrString){
+    // Dùng .filter(Boolean) để giữ lại các phần tử không trống.
+    // Sau đó, flatMap làm phẳng tất cả mảng con thành một mảng duy nhất (value).
+    const value = arrString.flatMap(arr => arr.split(/[\(\),]/).filter(Boolean));
+    console.log("Value: " + value);
+    
+    switch(value[0]){ 
+        case 'GetCalibration'    : return GetCalibration(value);
+        case 'degL'              : return UpdateAngleValue(value);
+        case 'OpenPosition'      : return Step1();
+        case 'ClosePosition'     : return Step2();
+        case 'SetCalibration'    : return Step3();
+        case 'Touch'             : return Step4();
+        case 'TB1A'              : return CalibrationDone();
+    }
+}
+
+function UpdateAngleValue(arrString){
+    angleLvalue = arrString[2];
+    angleRvalue = arrString[5];
+
+    if(angleLvalue !== Lvalue.value || angleRvalue !== Rvalue.value){
+        alert('WRONG MESSAGE!');
+    }   
+}
+
+function GetCalibration(arrString){
+    handleAction(',Step1');
+    old00L = arrString[1];
+    old90L = arrString[2];
+    old00R = arrString[3];
+    old90R = arrString[4];
+    console.log("Gripper: " + old00L + "," + old90L + "," + old00R + "," + old90R);
+}
+
+function DemoTest_handle(arrString){
+    if(arrString[0] == "TB" && checkmessage){
+        TB1A = parseInt(string[3]);                          checkArray[0]=TB1A;
+        TB1B = parseInt(string[4]);                          checkArray[1]=TB1B;
+        TB2A = parseInt(string[5]);                          checkArray[2]=TB2A;
+        TB2B = parseInt(string[6]);                          checkArray[3]=TB2B;
+        ir6L = compareThreshold(0);     checkArray[4]=ir6L;
+        ir4L = compareThreshold(1);     checkArray[5]=ir4L;
+        ir2L = compareThreshold(2);     checkArray[6]=ir2L;
+        ir0L = compareThreshold(3);     checkArray[7]=ir0L;
+        ir1R = compareThreshold(4);     checkArray[8]=ir1R;
+        ir3R = compareThreshold(5);     checkArray[9]=ir3R;
+        ir5R = compareThreshold(6);     checkArray[10]=ir5R;
+        ir7R = compareThreshold(7);     checkArray[11]=ir7R;
+
+        
+        lineState = ir2L.toString() + ir0L.toString() + ir1R.toString() + ir3R.toString();
+
+        if(lineState === '1111' || lineState === '0000'){
+            testFollowline.style.color = "#CCCCCC";
+        }
+        else{
+            testFollowline.style.color = "green";
+            if(checkAlertFollowLine){
+                AlertFollowLine.style.display = 'none';
+                checkClickDone = false;
+                runTest(
+                    "Followline",
+                    [
+                    ".LineFollow",
+                    toStr(threshold[2], 3),
+                    toStr(threshold[3], 3),
+                    toStr(threshold[4], 3),
+                    toStr(threshold[5], 3),
+                    ].join(' ')
+                );
+                checkAlertFollowLine = false;
+            }
+        }
+        
+        for (let i = 0; i < 4; i++) {
+            let element = document.getElementById(elementIds[i]);
+            let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
+        
+            if (checkArray[i] === 1 && checkCoutTouch[i]) {
+                checkCoutTouch[i] = false;
+                CountTouch[i]++;
+                paragraph.innerHTML = elementIds[i] + "<br>" + CountTouch[i];
+            }
+            else if(checkArray[i] === 0){
+                checkCoutTouch[i] = true;
+            }
+            if(CountTouch[i] === 1){
+                element.style.border = "3px solid orange";
+            }
+            else if(CountTouch[i] === 3){
+                element.style.border = "3px solid green";
+                checksum[i] = 1;
+            }
+        }
+
+        for (let i = 4; i < 12; i++) {
+            let element = document.getElementById(elementIds[i]);
+            let paragraph = element.querySelector('p'); // Tìm phần tử <p> bên trong div
+
+            paragraph.innerHTML = elementIds[i] + "<br>" + arrString[i + 1];
+        }
+        // Comment chuyển màu viền của Touch
+        for (let i = 4; i < elementIds.length; i++) {
+            let element = document.getElementById(elementIds[i]);
+            
+            handleBorderChange(i, element, check1, Lastcommand1, Timeout1, 1);
+            handleBorderChange(i, element, check0, Lastcommand0, Timeout0, 0);
+        
+            if (check0[i] && check1[i]) {
+                checksum[i] = 1;
+                element.style.border = "3px solid green";
+            }
+        }  
+
+        distance = arrString[14];
+        distanceInt = parseInt(distance); // Chuyển đổi thành số nguyên
+
+        if(distanceInt > 50){
+            testObjectfollow.style.color = "#CCCCCC";
+        }
+        else{
+            if(checkTestObjectDemo){
+                alertBox.style.display = 'none';
+                checkClickDone = false;
+                runTest("Objectfollow",".Objectfollow");
+                checkTestObjectDemo = false;
+            }
+            testObjectfollow.style.color = "green";
+        }
+
+        angleL = arrString[18];
+        angleR = arrString[19];
+        angleLValue.textContent = `${angleL}°`;
+        angleRValue.textContent = `${angleR}°`;
+
+        Updateallbackground(); 
+
+        if(!check10cm){
+            if(distance == '10'){
+                element10cm.style.color = "orange";
+            if(Lastcommand10cm){
+            Timeout10cm = setTimeout(() => {
+                element10cm.style.color = "green";
+                check10cm=true;
+            }, 3000);
+            }
+            Lastcommand10cm = false;
+            }
+            else{
+                element10cm.style.color = "#CCCCCC";
+                clearTimeout(Timeout10cm);
+                Lastcommand10cm=true;   
+            }
+        }
+    
+        if(!check30cm){
+            if(distance == '30'){
+                element30cm.style.color = "orange";
+            if(Lastcommand30cm){
+            Timeout30cm = setTimeout(() => {
+                element30cm.style.color = "green";
+                check30cm=true;
+            }, 3000);
+            }
+            Lastcommand30cm=false;
+            }
+            else{
+                element30cm.style.color = "#CCCCCC";
+                clearTimeout(Timeout30cm);
+                Lastcommand30cm=true;   
+            }
+        }
+        if(check10cm && check30cm){
+            distanceValue.style.color = "green";
+            slidercontainer.style.border = "3px solid green ";
+        }
+        if (distance === "1000") {
+            distanceValue.textContent="HC-SR04 Ultrasonic distance";
+            distanceValue.style.fontSize = "13px";
+        } else {
+            distanceValue.textContent = `${distance} cm`;
+            distanceValue.style.fontSize = "20px";
+        }
+        slider.value = distance;
+    }
+}
 
 let threshold = Array(8).fill(map(100, 0, 768, 0, 255));
 
@@ -849,6 +1088,13 @@ function Step4(){
     document.getElementById("Next").innerText = "Done";
     toggleDisplayForElements(["Next"], "none");
 }
+
+function CalibrationDone(){
+    Text_Area.value = `TB1A + TB1B touched. Calibration settings saved. Calibration Done. Please Rescan Leanbot`;
+    Backbutton.style.display = "none";
+    Cancelbutton.style.display = "none";
+}
+
 
 function toggleDisplayForElements(elementIds, displayValue) {
     elementIds.forEach(function(id) {
