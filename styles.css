@@ -673,6 +673,28 @@ body {
   color: white; /* Màu chữ trắng để nổi bật */
 }
 
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0px;
+}
+
+.LinkWeb {
+  width: calc(33.33% - 20px);
+  display: flex;
+  height: 10px;
+  margin: 0px 10px;
+  justify-content: center;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
+@media screen and (orientation: landscape) {
+  .LinkWeb {
+    width: calc(33.33% - 20px);
+  }
+}
+
 /* Media query cho chế độ dọc */
 @media screen and (orientation: portrait) {
   .contentCalibration {
