@@ -261,9 +261,11 @@ function updateIRValue(arrString){
     }
 }
 
-function updateGripperValue(angleL, angleR) {
-    angleLValue.textContent = `${angleL}°`;
-    angleRValue.textContent = `${angleR}°`;
+function updateGripperValue(angleLeft, angleRight) {
+    angleL = angleLeft;
+    angleR = angleRight;
+    angleLValue.textContent = `${angleLeft}°`;
+    angleRValue.textContent = `${angleRight}°`;
 }
 
 function updateDistanceValue(distance) {
