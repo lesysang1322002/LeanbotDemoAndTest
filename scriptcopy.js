@@ -1,3 +1,7 @@
+function logstatusWebName(text){
+    logstatus(text + " - Standard Modules");
+}
+
 function resetVariable() {
     // 1. Thiết lập lại hiển thị và giao diện
     tab1.style.display = "none";
