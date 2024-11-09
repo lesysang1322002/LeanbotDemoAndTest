@@ -237,6 +237,13 @@ function updateIRValue(arrString){
         let paragraph = UI(elementIds[i + 4]).querySelector('p'); // Tìm phần tử <p> bên trong div
         // Cập nhật giá trị IR
         paragraph.innerHTML = elementIds[i + 4] + "<br>" + arrString[i + 5];
+        // Chuyển màu viền của IR
+        handleBorderChange(i + 4, UI(elementIds[i + 4]), check1, Lastcommand1, Timeout1, 1);
+        handleBorderChange(i + 4, UI(elementIds[i + 4]), check0, Lastcommand0, Timeout0, 0);
+        if (check0[i + 4] && check1[i + 4] ) {
+            checksum[i + 4] = 1;
+            UI(elementIds[i + 4]).style.border = "3px solid green";
+        }
     }
 }
 
@@ -338,7 +345,7 @@ function handleBorderChange(i, element, check, lastCommand, timeout, value) {
         element.style.border = "3px solid orange";
         if (lastCommand[i]) {
             timeout[i] = setTimeout(() => {
-                element.style.border = "3px solid resetColor";
+                element.style.border = "3px solid #CCCCCC";
                 check[i] = true;
             }, 2000);
         }
@@ -477,16 +484,18 @@ function buttonGripperRight(){
 
 // Calibration  Gripper
 function GripperCalibration() {
-    if(!checkmessage) return;
+    if ( !checkmessage) return;
 
-    if (tab1.style.display !== "none" && tab1.style.display !== "") return tab1.style.display = "none";
-
-    tab1.style.display = "block";  // Show the element if it's hidden
-    resetVariable();
-    UI("buttonText").innerText = "Rescan";
-    send(',GripperCalibration');
-    checkCalibrationGripper = true;
-    checkClickDone = true;
+    if (tab1.style.display === "none" || tab1.style.display === "") {
+        resetVariable();
+        document.getElementById("buttonText").innerText = "Rescan";
+        send(',GripperCalibration');
+        checkCalibrationGripper = true;
+        checkClickDone = true;
+        tab1.style.display = "block"; // Show the element
+    } else {
+        tab1.style.display = "none";   // Hide the element if it's visible
+    }
 }
 
 

@@ -712,16 +712,16 @@ function buttonGripperRight(){
 // Calibration  Gripper
 function GripperCalibration() {
     if(checkmessage){
-    if (tab1.style.display === "none" || tab1.style.display === "") {
-        tab1.style.display = "block";  // Show the element if it's hidden
-        resetPageColor();
-        document.getElementById("buttonText").innerText = "Rescan";
-        send(',GripperCalibration');
-        checkCalibrationGripper = true;
-        checkClickDone = true;
-    } else {
-        tab1.style.display = "none";   // Hide the element if it's visible
-    }
+        if (tab1.style.display === "none" || tab1.style.display === "") {
+            tab1.style.display = "block";  // Show the element if it's hidden
+            resetPageColor();
+            document.getElementById("buttonText").innerText = "Rescan";
+            send(',GripperCalibration');
+            checkCalibrationGripper = true;
+            checkClickDone = true;
+        } else {
+            tab1.style.display = "none";   // Hide the element if it's visible
+        }
     }
 }
 
