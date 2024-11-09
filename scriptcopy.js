@@ -623,10 +623,7 @@ function CalibrationDone(){
 
 function toggleDisplayForElements(elementIds, displayValue) {
     elementIds.forEach(function(id) {
-        let element = UI(id);
-        if (element) {
-            element.style.display = displayValue;
-        }
+        if (UI(id)) UI(id).style.display = displayValue;
     });
 }
 
