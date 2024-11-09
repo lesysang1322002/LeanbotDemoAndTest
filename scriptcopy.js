@@ -457,21 +457,21 @@ function runTest(component, command){
     }
 }
 
-let angleValues = ["0", "-30" , "120" , "90", "45"];
+const angleValues = ["0", "-30" , "120" , "90", "45"];
 
 function sendAngle(nextAngleL, nextAngleR){ 
     if (!checkClickDone) send([".GripperLR", toStr(nextAngleL, 3), toStr(nextAngleR, 3)].join(' '));
 }
 
 function buttonGripperLeft(){
-    let currentIndexL = angleValues.indexOf(angleL);
-    let nextIndexL = (currentIndexL + 1) % angleValues.length;
+    const currentIndexL = angleValues.indexOf(angleL);
+    const nextIndexL = (currentIndexL + 1) % angleValues.length;
     sendAngle(angleValues[nextIndexL], angleR);
 }
 
 function buttonGripperRight(){
-    let currentIndexR = angleValues.indexOf(angleR);
-    let nextIndexR = (currentIndexR + 1) % angleValues.length;
+    const currentIndexR = angleValues.indexOf(angleR);
+    const nextIndexR = (currentIndexR + 1) % angleValues.length;
     sendAngle(angleL, angleValues[nextIndexR]);
 }
 
