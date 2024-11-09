@@ -4,6 +4,41 @@ function logstatusWebName(text){
     logstatus(text + " - Standard Modules");
 }
 
+function handleSerialLine(line) {
+    if (! line) return;
+    console.log("Nano > " + line);
+
+    const arrString = line.split(/[ \t]+/);
+    checkCodefromLeanbot(arrString);
+
+    if (checkCalibrationGripper) return CalibrationGripper_handle(arrString);
+    if (arrString[0] === "TB" && checkmessage) return DemoTest_handle(arrString);
+    UpdateBorderButtonDemo(arrString[0]);
+}
+
+function checkCodefromLeanbot(arrString){
+    if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
+        console.log("Message correct.");
+        send(".RemoteControl");
+        checkmessage = true;
+        clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
+        UI('distanceValue').style.color  = "black";
+        UI('textangle').style.color      = "black";
+        UI('textangleLeft').style.color  = "black";
+        UI('textangleRight').style.color = "black";
+        UI('testIRLineCalibration').style.color = "black";
+        buttonsTest.forEach(item => {
+            item.style.color = "black";
+        });
+        gridItems.forEach(item => {
+            item.style.removeProperty("color");
+        });
+        UI('textGripperCalibration').style.color = "black";
+    }
+}
+
+
+
 function resetVariable() {
     // 1. Thiết lập lại hiển thị và giao diện
     tab1.style.display = "none";
@@ -11,12 +46,12 @@ function resetVariable() {
     UI("buttonText").innerText = "Scan";
 
     // 2. Đặt màu mặc định cho các phần tử
-    distanceValue.style.color = resetColor;
-    textangle.style.color = resetColor;
-    textangleLeft.style.color = resetColor;
-    textangleRight.style.color = resetColor;
-    testIRLineCalibration.style.color = resetColor;
-    distanceValue.style.fontSize = "13px";
+    UI('distanceValue').style.color = resetColor;
+    UI('textangle').style.color = resetColor;
+    UI('textangleLeft').style.color = resetColor;
+    UI('textangleRight').style.color = resetColor;
+    UI('testIRLineCalibration').style.color = resetColor;
+    UI('distanceValue').style.fontSize = "13px";
     
     buttonsTest.forEach(item => item.style.color = resetColor);
     gridItems.forEach(item => {
@@ -126,38 +161,7 @@ let textButtonGripperCalibration = UI('textGripperCalibration');
 let checkCalibrationGripper = false;
 // End Initial Gripper Calibration
 
-function handleSerialLine(line) {
-    if (! line) return;
-    console.log("Nano > " + line);
 
-    const arrString = line.split(/[ \t]+/);
-    checkCodefromLeanbot(arrString);
-
-    if (checkCalibrationGripper) return CalibrationGripper_handle(arrString);
-    if (arrString[0] === "TB" && checkmessage) return DemoTest_handle(arrString);
-    UpdateBorderButtonDemo(arrString[0]);
-}
-
-function checkCodefromLeanbot(arrString){
-    if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
-        console.log("Message correct.");
-        send(".RemoteControl");
-        checkmessage = true;
-        clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
-        distanceValue.style.color  = "black";
-        textangle.style.color      = "black";
-        textangleLeft.style.color  = "black";
-        textangleRight.style.color = "black";
-        testIRLineCalibration.style.color = "black";
-        buttonsTest.forEach(item => {
-            item.style.color = "black";
-        });
-        gridItems.forEach(item => {
-            item.style.removeProperty("color");
-        });
-        textGripperCalibration.style.color = "black";
-    }
-}
 
 function CalibrationGripper_handle(arrString){
     // Dùng .filter(Boolean) để giữ lại các phần tử không trống.
@@ -179,7 +183,6 @@ function CalibrationGripper_handle(arrString){
 function UpdateAngleValue(arrString){
     angleLvalue = arrString[2];
     angleRvalue = arrString[5];
-
     if(angleLvalue !== UI('angleLvalueCali').value || angleRvalue !== UI('angleRvalueCali').value) alert('WRONG MESSAGE!');
 }
 
@@ -291,7 +294,6 @@ function handle10cmCheck(distance) {
         clearTimeout(Timeout10cm);
         Lastcommand10cm = true;
     }
-    
 }
 
 function handle30cmCheck(distance) {
@@ -447,7 +449,6 @@ function resetBackground() {
     const elements = ['ir2L', 'ir0L', 'ir1R', 'ir3R', 'ir4L', 'ir6L', 'ir5R', 'ir7R', 'TB1A', 'TB1B', 'TB2A', 'TB2B'];
     elements.forEach(id => updateBackground(id, 0));
 }
-
 
 let checkClickDone = false;
     // Thực hiện send và đổi màu viền khi click
