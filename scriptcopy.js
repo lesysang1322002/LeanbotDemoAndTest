@@ -180,9 +180,7 @@ function UpdateAngleValue(arrString){
     angleLvalue = arrString[2];
     angleRvalue = arrString[5];
 
-    if(angleLvalue !== UI('angleLvalueCali').value || angleRvalue !== UI('angleRvalueCali').value){
-        alert('WRONG MESSAGE!');
-    }   
+    if(angleLvalue !== UI('angleLvalueCali').value || angleRvalue !== UI('angleRvalueCali').value) alert('WRONG MESSAGE!');
 }
 
 function GetCalibration(arrString){
