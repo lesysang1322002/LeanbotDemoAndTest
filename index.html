@@ -52,87 +52,87 @@
             <button class = "buttonGripperCalibration" onclick = "GripperCalibration()"><p id = "textGripperCalibration" style="margin:0px 0px";>Gripper Calibration</p></button>
         </div>
         <div id="tab1" class="contentCalibration" style="display:none;">
-                <div class="grid-containerCalibration">
-                    <div class="angleLCali"><p id="angleLeft" style="margin:0px 0px";>Left</p></div>
-                    <div class="angleCali"><p id="textangleCali" style="margin:0px 0px";>Gripper</p></div>
-                    <div class="angleRCali"><p id="angleRight" style="margin:0px 0px";>Right</p></div>
-                    
-                    <textarea  class="TextArea" id="textareaCali" readonly=""></textarea>
-            
-                    <input class="angleRvalueCali" id = "angleRvalueCali" type="text" value="0" readonly>
-                    <input class="angleLvalueCali" id = "angleLvalueCali" type="text" value="0" readonly>
-            
-                    <button class="L0decrement buttonCalibration"   id="L0decrement">-1</button>
-                    <button class="L0increment buttonCalibration"   id="L0increment">+1</button>
-            
-                    <button class="R0decrement buttonCalibration"   id="R0decrement">-1</button>
-                    <button class="R0increment buttonCalibration"   id="R0increment">+1</button>
+            <div class="grid-containerCalibration">
+                <div class="angleLCali"><p id="angleLeft" style="margin:0px 0px";>Left</p></div>
+                <div class="angleCali"><p id="textangleCali" style="margin:0px 0px";>Gripper</p></div>
+                <div class="angleRCali"><p id="angleRight" style="margin:0px 0px";>Right</p></div>
+                
+                <textarea  class="TextArea" id="textareaCali" readonly=""></textarea>
+        
+                <input class="angleRvalueCali" id = "angleRvalueCali" type="text" value="0" readonly>
+                <input class="angleLvalueCali" id = "angleLvalueCali" type="text" value="0" readonly>
+        
+                <button class="L0decrement buttonCalibration"   id="L0decrement">-1</button>
+                <button class="L0increment buttonCalibration"   id="L0increment">+1</button>
+        
+                <button class="R0decrement buttonCalibration"   id="R0decrement">-1</button>
+                <button class="R0increment buttonCalibration"   id="R0increment">+1</button>
 
-                    <button class="L0_5decrement buttonCalibration"   id="L0_5decrement">-5</button>
-                    <button class="L0_5increment buttonCalibration"   id="L0_5increment">+5</button>
-            
-                    <button class="R0_5decrement buttonCalibration"   id="R0_5decrement">-5</button>
-                    <button class="R0_5increment buttonCalibration"   id="R0_5increment">+5</button>
-            
-                    <button class="L90decrement buttonCalibration" style="display:none;"  id="L90decrement">-1</button>
-                    <button class="L90increment buttonCalibration" style="display:none;"  id="L90increment">+1</button>
-            
-                    <button class="R90decrement buttonCalibration" style="display:none;"  id="R90decrement">-1</button>
-                    <button class="R90increment buttonCalibration" style="display:none;"  id="R90increment">+1</button>
+                <button class="L0_5decrement buttonCalibration"   id="L0_5decrement">-5</button>
+                <button class="L0_5increment buttonCalibration"   id="L0_5increment">+5</button>
+        
+                <button class="R0_5decrement buttonCalibration"   id="R0_5decrement">-5</button>
+                <button class="R0_5increment buttonCalibration"   id="R0_5increment">+5</button>
+        
+                <button class="L90decrement buttonCalibration" style="display:none;"  id="L90decrement">-1</button>
+                <button class="L90increment buttonCalibration" style="display:none;"  id="L90increment">+1</button>
+        
+                <button class="R90decrement buttonCalibration" style="display:none;"  id="R90decrement">-1</button>
+                <button class="R90increment buttonCalibration" style="display:none;"  id="R90increment">+1</button>
 
-                    <button class="L90_5decrement buttonCalibration" style="display:none;"  id="L90_5decrement">-5</button>
-                    <button class="L90_5increment buttonCalibration" style="display:none;"  id="L90_5increment">+5</button>
-            
-                    <button class="R90_5decrement buttonCalibration" style="display:none;"  id="R90_5decrement">-5</button>
-                    <button class="R90_5increment buttonCalibration" style="display:none;"  id="R90_5increment" >+5</button>
-            
-            
-                    <button class="Nextbutton buttonCalibration"   id = "Next" onclick = "Next()" >Next</button>
-                    <button class="Backbutton buttonCalibration"   style="display:block;" id = "Backbutton" onclick="Back()" >Back</button>
-                    <button class="Cancelbutton buttonCalibration" style="display:block;" id = "Cancelbutton" onclick="Cancel()" >Cancel</button>
-                </div>
+                <button class="L90_5decrement buttonCalibration" style="display:none;"  id="L90_5decrement">-5</button>
+                <button class="L90_5increment buttonCalibration" style="display:none;"  id="L90_5increment">+5</button>
+        
+                <button class="R90_5decrement buttonCalibration" style="display:none;"  id="R90_5decrement">-5</button>
+                <button class="R90_5increment buttonCalibration" style="display:none;"  id="R90_5increment" >+5</button>
+        
+        
+                <button class="Nextbutton buttonCalibration"   id = "Next" onclick = "Next()" >Next</button>
+                <button class="Backbutton buttonCalibration"   style="display:block;" id = "Backbutton" onclick="Back()" >Back</button>
+                <button class="Cancelbutton buttonCalibration" style="display:block;" id = "Cancelbutton" onclick="Cancel()" >Cancel</button>
+            </div>
         </div>  
         <div class="grid-item ir4L" id="ir4L">
-            <p style="margin:0px 0px";>ir4L<br>0</p>
+            <p style="margin:0px 0px">ir4L<br>0</p>
         </div>
         <div class="grid-item ir2L" id="ir2L">
-            <p style="margin:0px 0px";>ir2L<br>0</p>
+            <p style="margin:0px 0px">ir2L<br>0</p>
         </div>
         <div class="grid-item ir0L" id="ir0L">
-            <p style="margin:0px 0px";>ir0L<br>0</p>
+            <p style="margin:0px 0px">ir0L<br>0</p>
         </div>
         <div class="grid-item ir1R" id="ir1R">
-            <p style="margin:0px 0px";>ir1R<br>0</p>
+            <p style="margin:0px 0px">ir1R<br>0</p>
         </div>
         <div class="grid-item ir3R" id="ir3R">
-            <p style="margin:0px 0px";>ir3R<br>0</p>
+            <p style="margin:0px 0px">ir3R<br>0</p>
         </div>
         <div class="grid-item ir5R" id="ir5R">
-            <p style="margin:0px 0px";>ir5R<br>0</p>
+            <p style="margin:0px 0px">ir5R<br>0</p>
         </div>
         <div class="grid-item ir6L" id="ir6L">
-            <p style="margin:0px 0px";>ir6L<br>0</p>
+            <p style="margin:0px 0px">ir6L<br>0</p>
         </div>
         <div class="grid-item ir7R" id="ir7R">
-            <p style="margin:0px 0px";>ir7R<br>0</p>
+            <p style="margin:0px 0px">ir7R<br>0</p>
         </div>
         <div class="grid-item TB1A" id="TB1A">
-            <p style="margin:0px 0px";>TB1A
+            <p style="margin:0px 0px">TB1A
                 0
             </p>  
         </div>
         <div class="grid-item TB1B" id="TB1B">
-            <p style="margin:0px 0px";>TB1B
+            <p style="margin:0px 0px">TB1B
                 0
             </p>
         </div>
         <div class="grid-item TB2A" id="TB2A">
-            <p style="margin:0px 0px";>TB2A
+            <p style="margin:0px 0px">TB2A
                 0
             </p>
         </div>
         <div class="grid-item TB2B" id="TB2B">
-            <p style="margin:0px 0px";>TB2B
+            <p style="margin:0px 0px">TB2B
                 0
             </p>
         </div>
