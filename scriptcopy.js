@@ -16,28 +16,114 @@ function handleSerialLine(line) {
     UpdateBorderButtonDemo(arrString[0]);
 }
 
-function checkCodefromLeanbot(arrString){
-    if (arrString[0] == "TB" && arrString[3] == "IR" &&  !checkmessage) {
+function checkCodefromLeanbot(arrString) {
+    if (arrString[0] === "TB" && arrString[3] === "IR" && !checkmessage) {
         console.log("Message correct.");
         send(".RemoteControl");
         checkmessage = true;
-        clearTimeout(timeoutCheckMessage);// Hủy kết thúc sau 5 giây
-        UI('distanceValue').style.color  = "black";
-        UI('textangle').style.color      = "black";
-        UI('textangleLeft').style.color  = "black";
-        UI('textangleRight').style.color = "black";
-        UI('testIRLineCalibration').style.color = "black";
-        buttonsTest.forEach(item => {
-            item.style.color = "black";
-        });
-        gridItems.forEach(item => {
-            item.style.removeProperty("color");
-        });
-        UI('textGripperCalibration').style.color = "black";
+        clearTimeout(timeoutCheckMessage); // Hủy kết thúc sau 5 giây
+
+        // Khi đã kết nối chuyển text từ xám sang màu đen
+        const elementsToChangeColor = [
+            'distanceValue', 'textangle', 'textangleLeft', 'textangleRight', 
+            'testIRLineCalibration', 'textGripperCalibration'
+        ];
+        elementsToChangeColor.forEach(id => UI(id).style.color = "black");
+        buttonsTest.forEach(item => item.style.color = "black");
+        gridItems.forEach(item => item.style.removeProperty("color"));
     }
 }
 
+// Hiệu chỉnh cánh tay 
+function CalibrationGripper_handle(arrString){
+    // Dùng .filter(Boolean) để giữ lại các phần tử không trống.
+    // Sau đó, flatMap làm phẳng tất cả mảng con thành một mảng duy nhất (value).
+    const value = arrString.flatMap(arr => arr.split(/[\(\),]/).filter(Boolean));
+    console.log("Value: " + value);
+    
+    switch(value[0]){ 
+        case 'GetCalibration'    : return GetCalibration(value);
+        case 'degL'              : return UpdateAngleValue(value);
+        case 'OpenPosition'      : return Step1();
+        case 'ClosePosition'     : return Step2();
+        case 'SetCalibration'    : return Step3();
+        case 'Touch'             : return Step4();
+        case 'TB1A'              : return CalibrationDone();
+    }
+}
 
+// Các hàm xử lý hiệu chỉnh cánh tay
+
+let Step = 0;
+
+function Next() {
+    console.log("Step: " + Step);
+    if(Step == 1){
+        handleAction(',Step2');
+    }
+    else if(Step == 2){
+        handleAction(',Step3');
+    }
+    else if(Step == 3){
+        handleAction(',Step4');
+    }
+}
+
+function GetCalibration(arrString){
+    // Cập nhật giá trị cũ của cánh tay
+    old00L = arrString[1];
+    old90L = arrString[2];
+    old00R = arrString[3];
+    old90R = arrString[4];
+    console.log("Old00L: " + old00L + " Old90L: " + old90L + " Old00R: " + old00R + " Old90R: " + old90R);
+    handleAction(',Step1'); // Bắt đầu hiệu chỉnh cánh tay
+}
+
+function Step1(){
+    Step = 1;
+    UI("Next").innerText = "Next";
+    UI('textareaCali').value = "Step 1/4: Adjust both gripper arms to proper 0° position (pointing down)";
+    UI('angleRvalueCali').value = old00R;
+    UI('angleLvalueCali').value = old00L;
+    sendLR();
+    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement",
+                              "R0_5increment", "R0_5decrement", "L0_5increment", "L0_5decrement"], "block");
+    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
+                              "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement"], "none");
+    toggleDisplayForElements(["Next"], "block");
+}
+
+function Step2(){
+    Step = 2;
+    UI("Next").innerText = "Next";
+    UI('textareaCali').value = "Step 2/4: Adjust both gripper arms to proper 90° position (pointing horizontally)";
+    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
+                               "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement" ], "block");
+    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement", 
+                              "R0_5increment", "R0_5decrement", "L0_5increment", "L0_5decrement"], "none");
+    UI('angleRvalueCali').value = old90R;
+    UI('angleLvalueCali').value = old90L;
+    sendLR();
+}
+
+function Step3(){
+    Step = 3;
+    UI("Next").innerText = "Save";
+    UI('textareaCali').value = "Step 3/4: Observe gripper open and close correctly";
+    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
+                              "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement" ], "none");
+}
+
+function Step4(){
+    Step = 4;
+    UI('textareaCali').value = "Step 4/4: Touch TB1A + TB1B to permanently save calibration settings";
+    UI("Next").innerText = "Done";
+    toggleDisplayForElements(["Next"], "none");
+}
+
+function sendLR(){
+    send (',LR' + ' ' + UI('angleLvalueCali').value + ' ' + UI('angleRvalueCali').value);
+}
 
 function resetVariable() {
     // 1. Thiết lập lại hiển thị và giao diện
@@ -63,7 +149,7 @@ function resetVariable() {
     textGripperCalibration.style.color = resetColor;
 
     // 3. Đặt lại giá trị văn bản
-    distanceValue.textContent = "HC-SR04 Ultrasonic distance";
+    UI('distanceValue').textContent = "HC-SR04 Ultrasonic distance";
     UI('textangleL').textContent = '';
     UI('textangleR').textContent = '';
 
@@ -161,39 +247,13 @@ let textButtonGripperCalibration = UI('textGripperCalibration');
 let checkCalibrationGripper = false;
 // End Initial Gripper Calibration
 
-
-
-function CalibrationGripper_handle(arrString){
-    // Dùng .filter(Boolean) để giữ lại các phần tử không trống.
-    // Sau đó, flatMap làm phẳng tất cả mảng con thành một mảng duy nhất (value).
-    const value = arrString.flatMap(arr => arr.split(/[\(\),]/).filter(Boolean));
-    console.log("Value: " + value);
-    
-    switch(value[0]){ 
-        case 'GetCalibration'    : return GetCalibration(value);
-        case 'degL'              : return UpdateAngleValue(value);
-        case 'OpenPosition'      : return Step1();
-        case 'ClosePosition'     : return Step2();
-        case 'SetCalibration'    : return Step3();
-        case 'Touch'             : return Step4();
-        case 'TB1A'              : return CalibrationDone();
-    }
-}
-
 function UpdateAngleValue(arrString){
     angleLvalue = arrString[2];
     angleRvalue = arrString[5];
     if(angleLvalue !== UI('angleLvalueCali').value || angleRvalue !== UI('angleRvalueCali').value) alert('WRONG MESSAGE!');
 }
 
-function GetCalibration(arrString){
-    handleAction(',Step1');
-    old00L = arrString[1];
-    old90L = arrString[2];
-    old00R = arrString[3];
-    old90R = arrString[4];
-    console.log("Gripper: " + old00L + "," + old90L + "," + old00R + "," + old90R);
-}
+
 
 function DemoTest_handle(arrString){
     // String: TB,0000,-,IR,0001,255,92,16,19,16,47,104,255,-,1000,cm,-,GR,0,0 
@@ -316,11 +376,11 @@ function handle30cmCheck(distance) {
 }
 
 function updateDistanceDisplay(distance) {
-    distanceValue.textContent = (distance === "1000") ? "HC-SR04 Ultrasonic distance" : `${distance} cm`;
-    distanceValue.style.fontSize = (distance === "1000") ? "13px" : "20px";
+    UI('distanceValue').textContent = (distance === "1000") ? "HC-SR04 Ultrasonic distance" : `${distance} cm`;
+    UI('distanceValue').style.fontSize = (distance === "1000") ? "13px" : "20px";
     UI('distanceSlider').value = distance;
     if (check10cm && check30cm) {
-        distanceValue.style.color = "green";
+        UI('distanceValue').style.color = "green";
         UI('distanceSlider').style.border = "3px solid green";
     }
 }
@@ -559,67 +619,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function handleAction(action) {
     send(action);
-}
-
-function sendLR(){
-    send (',LR' + ' ' + UI('angleLvalueCali').value + ' ' + UI('angleRvalueCali').value);
-}
-
-let Step = 0;
-
-function Next() {
-    console.log("Step: " + Step);
-    if(Step == 1){
-        handleAction(',Step2');
-    }
-    else if(Step == 2){
-        handleAction(',Step3');
-    }
-    else if(Step == 3){
-        handleAction(',Step4');
-    }
-}
-
-function Step1(){
-    Step = 1;
-    UI("Next").innerText = "Next";
-    UI('textareaCali').value = "Step 1/4: Adjust both gripper arms to proper 0° position (pointing down)";
-    UI('angleRvalueCali').value = old00R;
-    UI('angleLvalueCali').value = old00L;
-    sendLR();
-    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement",
-                            "R0_5increment", "R0_5decrement", "L0_5increment", "L0_5decrement"], "block");
-    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
-                            "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement"], "none");
-    toggleDisplayForElements(["Next"], "block");
-}
-
-function Step2(){
-    Step = 2;
-    UI("Next").innerText = "Next";
-    UI('textareaCali').value = "Step 2/4: Adjust both gripper arms to proper 90° position (pointing horizontally)";
-    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
-                               "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement" ], "block");
-    toggleDisplayForElements(["R0increment", "R0decrement", "L0increment", "L0decrement", 
-                              "R0_5increment", "R0_5decrement", "L0_5increment", "L0_5decrement"], "none");
-    UI('angleRvalueCali').value = old90R;
-    UI('angleLvalueCali').value = old90L;
-    sendLR();
-}
-
-function Step3(){
-    Step = 3;
-    UI("Next").innerText = "Save";
-    UI('textareaCali').value = "Step 3/4: Observe gripper open and close correctly";
-    toggleDisplayForElements(["R90increment", "R90decrement", "L90increment", "L90decrement",
-                              "R90_5increment", "R90_5decrement", "L90_5increment", "L90_5decrement" ], "none");
-}
-
-function Step4(){
-    Step = 4;
-    UI('textareaCali').value = "Step 4/4: Touch TB1A + TB1B to permanently save calibration settings";
-    UI("Next").innerText = "Done";
-    toggleDisplayForElements(["Next"], "none");
 }
 
 function CalibrationDone(){
