@@ -39,6 +39,8 @@ const gridItems = document.querySelectorAll('.grid-item');
 
 //**********************Calibration Gripper**************************//
 
+let checkCalibrationGripper = false;
+
 function Gripper_Calibration_handle(arrString){
     // Dùng .filter(Boolean) để giữ lại các phần tử không trống.
     // Sau đó, flatMap làm phẳng tất cả mảng con thành một mảng duy nhất (value).
@@ -170,37 +172,54 @@ function toggleDisplayForElements(elementIds, displayValue) {
 
 //********************** Handle Message *************************************//
 
+
+let checkArray = [], checksum = []; // Touch + IR
+
+// Các id của IR và Touch trong Grid
+const elementIds = [
+    "TB1A", "TB1B", "TB2A", "TB2B", 
+    "ir6L", "ir4L", "ir2L", "ir0L", 
+    "ir1R", "ir3R", "ir5R", "ir7R"
+];
+
 function DemoTest_handle(arrString){
     // String: TB,0000,-,IR,0001,255,92,16,19,16,47,104,255,-,1000,cm,-,GR,0,0 
-    Touch_UpdateValue(arrString[1]);
-    IR_UpdateValue(arrString);
-    HCSR04_UpdateValue(arrString[14]);
-    Gripper_UpdateValue(arrString[18], arrString[19]);
+    Touch_handle(arrString);
+    IR_handle(arrString);
+    HCSR04_handle(arrString);
+    Gripper_handle(arrString);
+    Done_handle();
 }
 
 //****Touch****/
+let TB1A, TB1B, TB2A, TB2B;
+let Touch_Count = Array(4).fill(0);
+let Touch_checkCount = Array(4).fill(true);
 
-function Touch_UpdateValue(TB) {
+function Touch_handle(arrString){ 
+    const idx = arrString.indexOf('TB');
+    if (idx === -1) return;
+    const TB = arrString[idx + 1];
     for (let i = 0; i < 4; i++) {
         checkArray[i] = parseInt(TB[i]);
         const element = UI(elementIds[i]); // Lưu đối tượng UI vào biến
         const paragraph = element.querySelector('p');
         
-        // Cập nhật CountTouch khi checkArray[i] là 1 và checkCoutTouch[i] là true
-        if (checkArray[i] === 1 && checkCoutTouch[i]) {
-            checkCoutTouch[i] = false;
-            CountTouch[i]++;
-            paragraph.innerHTML = `${elementIds[i]}<br>${CountTouch[i]}`;
+        // Cập nhật Touch_Count khi checkArray[i] là 1 và Touch_checkCount[i] là true
+        if (checkArray[i] === 1 && Touch_checkCount[i]) {
+            Touch_checkCount[i] = false;
+            Touch_Count[i]++;
+            paragraph.innerHTML = `${elementIds[i]}<br>${Touch_Count[i]}`;
 
-            // Cập nhật viền dựa trên CountTouch
-            element.style.border = CountTouch[i] === 1 ? "3px solid orange" : 
-                                   CountTouch[i] === 3 ? "3px solid green" : 
+            // Cập nhật viền dựa trên Touch_Count
+            element.style.border = Touch_Count[i] === 1 ? "3px solid orange" : 
+                                   Touch_Count[i] === 3 ? "3px solid green" : 
                                    element.style.border;
 
-            if (CountTouch[i] === 3) checksum[i] = 1;
+            if (Touch_Count[i] === 3) checksum[i] = 1;
         } 
         else if (checkArray[i] === 0) {
-            checkCoutTouch[i] = true;
+            Touch_checkCount[i] = true;
         }
         
         // Cập nhật màu nền
@@ -209,9 +228,16 @@ function Touch_UpdateValue(TB) {
 }
 
 //****IR****/
+let ir2L, ir0L, ir1R, ir3R, ir4L, ir6L, ir5R, ir7R;
+let IR_checkValue0 = Array(8).fill(false), IR_checkValue1 = Array(8).fill(false); // Touch + IR
+let IR_TimeoutValue0 = [], IR_TimeoutValue1 = [];
+let IR_LastCmdValue0 = Array(8).fill(true), IR_LastCmdValue1 = Array(8).fill(true);
 
-function IR_UpdateValue(arrString) { 
-    for (let i = 4; i < 12; i++) {
+function IR_handle(arrString) { 
+    const idx = arrString.indexOf('IR');
+    if (idx === -1) return;
+    const IR_startIndex = idx + 1;
+    for (let i = IR_startIndex; i < IR_startIndex + 8; i++) {
         checkArray[i] = IR_compareThreshold(arrString, i - 4);
         let paragraph = UI(elementIds[i]).querySelector('p'); // Tìm phần tử <p> bên trong div
         
@@ -219,16 +245,18 @@ function IR_UpdateValue(arrString) {
         paragraph.innerHTML = elementIds[i] + "<br>" + arrString[i + 1];
         
         // Chuyển màu viền của IR
-        IR_handleBorderChange(i, UI(elementIds[i]), check1, Lastcommand1, Timeout1, 1);
-        IR_handleBorderChange(i, UI(elementIds[i]), check0, Lastcommand0, Timeout0, 0);
+        IR_handleBorderChange(i, UI(elementIds[i]), IR_checkValue1, IR_LastCmdValue1, IR_TimeoutValue1, 1);
+        IR_handleBorderChange(i, UI(elementIds[i]), IR_checkValue0, IR_LastCmdValue0, IR_TimeoutValue0, 0);
         
-        if (check0[i] && check1[i]) {
+        if (IR_checkValue0[i] && IR_checkValue1[i]) {
             checksum[i] = 1;
             UI(elementIds[i]).style.border = "3px solid green";
         }
         // Cập nhật màu nền
         updateBackground(elementIds[i], checkArray[i]);
     }
+    const IR_lineState = checkArray.slice(IR_startIndex + 2, IR_startIndex + 6).join('');
+    IR_LineFollow(IR_lineState);
 }
 
 function IR_handleBorderChange(i, element, check, lastCommand, timeout, value) {
@@ -236,17 +264,23 @@ function IR_handleBorderChange(i, element, check, lastCommand, timeout, value) {
 
     if(checkArray[i] === value) {
         element.style.border = "3px solid orange";
-        if (lastCommand[i]) {
+        if (lastCommand[i - 4]) {
             timeout[i] = setTimeout(() => {
                 element.style.border = "3px solid #CCCCCC";
                 check[i] = true;
             }, 2000);
         }
-        lastCommand[i] = false;
+        lastCommand[i - 4] = false;
     } else {
         clearTimeout(timeout[i]);
-        lastCommand[i] = true;
+        lastCommand[i - 4] = true;
     }
+}
+
+const threshold = Array(8).fill(map(100, 0, 768, 0, 255));
+
+function map(value, in_min, in_max, out_min, out_max) {
+    return parseInt((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 
 function IR_compareThreshold(arrString, index) {
@@ -255,25 +289,58 @@ function IR_compareThreshold(arrString, index) {
     return irValue > threshold[index] ? 1 : 0;
 }
 
-//****HC-SR04****/
+let checkAlertFollowLine = false;
 
-function HCSR04_UpdateValue(distance) {
+function IR_LineFollow(lineState){ 
+    
+    if(lineState === '1111' || lineState === '0000'){
+        testFollowline.style.color = "#CCCCCC";
+        return;
+    }
+    testFollowline.style.color = "green";
+    if(!checkAlertFollowLine) return;
+    
+    AlertFollowLine.style.display = 'none';
+    checkClickDone = false;
+    runTest(
+        "Followline",
+        [
+        ".LineFollow",
+        toStr(threshold[2], 3),
+        toStr(threshold[3], 3),
+        toStr(threshold[4], 3),
+        toStr(threshold[5], 3),
+        ].join(' ')
+    );
+    checkAlertFollowLine = false;
+}
+
+//****HC-SR04****/
+let HCSR04_DistanceInt;
+let HCSR04_Value10cm = false, HCSR04_Value30cm = false;
+let HCSR04_LastCmd10cm = true, HCSR04_LastCmd30cm = true;
+let HCSR04_Timeout10cm, HCSR04_Timeout30cm;
+
+function HCSR04_handle(arrString) {
+    const idx = arrString.indexOf('cm');
+    if (idx === -1) return;
+    const distance = arrString[idx - 1];
     HCSR04_ObjectFollow(distance);
     handle10cmCheck(distance);
     handle30cmCheck(distance);
-    // HCSR04_handleDistanceCheck(distance, '10', "text10cm", check10cm, Lastcommand10cm, Timeout10cm);
-    // HCSR04_handleDistanceCheck(distance, '30', "text30cm", check30cm, Lastcommand30cm, Timeout30cm);
+    // HCSR04_handleDistanceCheck(distance, '10', "text10cm", HCSR04_Value10cm, HCSR04_LastCmd10cm, HCSR04_Timeout10cm);
+    // HCSR04_handleDistanceCheck(distance, '30', "text30cm", HCSR04_Value30cm, HCSR04_LastCmd30cm, HCSR04_Timeout30cm);
     HCSR04_DistanceDisplay(distance);
 }
 
 function HCSR04_ObjectFollow(distance) {
-    distanceInt = parseInt(distance);
-    if (distanceInt > 50) {
+    HCSR04_DistanceInt = parseInt(distance);
+    if (HCSR04_DistanceInt > 50) {
         UI('testObjectfollow').style.color = resetColor;
         return;
     }
     if (checkTestObjectDemo) {
-        UI('infoContent').style.display = 'none';
+        UI('customAlert').style.display = 'none';
         checkClickDone = false;
         runTest("Objectfollow", ".Objectfollow");
         checkTestObjectDemo = false;
@@ -282,40 +349,40 @@ function HCSR04_ObjectFollow(distance) {
 }
 
 function handle10cmCheck(distance) {
-    if (check10cm) return;
+    if (HCSR04_Value10cm) return;
     
     if (distance === '10') {
         UI("text10cm").style.color = "orange";
-        if (Lastcommand10cm) {
-            Timeout10cm = setTimeout(() => {
+        if (HCSR04_LastCmd10cm) {
+            HCSR04_Timeout10cm = setTimeout(() => {
                 UI("text10cm").style.color = "green";
-                check10cm = true;
+                HCSR04_Value10cm = true;
             }, 3000);
         }
-        Lastcommand10cm = false;
+        HCSR04_LastCmd10cm = false;
     } else {
         UI("text10cm").style.color = resetColor;
-        clearTimeout(Timeout10cm);
-        Lastcommand10cm = true;
+        clearTimeout(HCSR04_Timeout10cm);
+        HCSR04_LastCmd10cm = true;
     }
 }
 
 function handle30cmCheck(distance) {
-    if (check30cm) return;
+    if (HCSR04_Value30cm) return;
     
     if (distance === '30') {
         UI("text30cm").style.color = "orange";
-        if (Lastcommand30cm) {
-            Timeout30cm = setTimeout(() => {
+        if (HCSR04_LastCmd30cm) {
+            HCSR04_Timeout30cm = setTimeout(() => {
                 UI("text30cm").style.color = "green";
-                check30cm = true;
+                HCSR04_Value30cm = true;
             }, 3000);
         }
-        Lastcommand30cm = false;
+        HCSR04_LastCmd30cm = false;
     } else {
         UI("text30cm").style.color = resetColor;
-        clearTimeout(Timeout30cm);
-        Lastcommand30cm = true;
+        clearTimeout(HCSR04_Timeout30cm);
+        HCSR04_LastCmd30cm = true;
     }
 }
 
@@ -342,19 +409,22 @@ function HCSR04_DistanceDisplay(distance) {
     UI('HCSR04').textContent = (distance === "1000") ? "HC-SR04 Ultrasonic distance" : `${distance} cm`;
     UI('HCSR04').style.fontSize = (distance === "1000") ? "13px" : "20px";
     UI('distanceSlider').value = distance;
-    if (check10cm && check30cm) {
+    if (HCSR04_Value10cm && HCSR04_Value30cm) {
         UI('HCSR04').style.color = "green";
         UI('ctn-slider').style.border = "3px solid green";
     }
 }
 
 //****Gripper****/
+let Gripper_angleL, Gripper_angleR;
 
-function Gripper_UpdateValue(angleLeft, angleRight) {
-    angleL = angleLeft;
-    angleR = angleRight;
-    UI('textangleL').textContent = `${angleLeft}°`;
-    UI('textangleR').textContent = `${angleRight}°`;
+function Gripper_handle(arrString) {
+    const idx = arrString.indexOf('GR');
+    if (idx === -1) return;
+    Gripper_angleL = arrString[idx + 1];
+    Gripper_angleR = arrString[idx + 2];
+    UI('textangleL').textContent = `${Gripper_angleL}°`;
+    UI('textangleR').textContent = `${Gripper_angleR}°`;
 }
 
 const Gripper_angleValues = ["0", "-30" , "120" , "90", "45"];
@@ -364,15 +434,15 @@ function Gripper_sendAngle(nextAngleL, nextAngleR){
 }
 
 function buttonGripperLeft(){
-    const currentIndexL = Gripper_angleValues.indexOf(angleL);
+    const currentIndexL = Gripper_angleValues.indexOf(Gripper_angleL);
     const nextIndexL = (currentIndexL + 1) % Gripper_angleValues.length;
-    Gripper_sendAngle(Gripper_angleValues[nextIndexL], angleR);
+    Gripper_sendAngle(Gripper_angleValues[nextIndexL], Gripper_angleR);
 }
 
 function buttonGripperRight(){
-    const currentIndexR = Gripper_angleValues.indexOf(angleR);
+    const currentIndexR = Gripper_angleValues.indexOf(Gripper_angleR);
     const nextIndexR = (currentIndexR + 1) % Gripper_angleValues.length;
-    Gripper_sendAngle(angleL, Gripper_angleValues[nextIndexR]);
+    Gripper_sendAngle(Gripper_angleL, Gripper_angleValues[nextIndexR]);
 }
 
 //*********************End Message Handle*********************/
@@ -416,30 +486,6 @@ function TestMotor(){
     runTest("Motor", ".Motion");
 }
 
-let checkAlertFollowLine = false;
-
-function TestLineFollow(){
-    if(!checkmessage) return;
-
-    if(lineState !== '1111' && lineState !== '0000'){
-        runTest(
-            "Followline",
-            [
-                ".LineFollow",
-                toStr(threshold[2], 3),
-                toStr(threshold[3], 3),
-                toStr(threshold[4], 3),
-                toStr(threshold[5], 3),
-            ].join(' ')
-        );     
-    }
-    else{
-        UI('customAlertFollowLine').style.display = 'block';
-        checkClickDone = true;
-        checkAlertFollowLine = true;
-    }
-}
-
 function TestStraightMotion(){
     runTest("StraightMotion",".StraightMotion");
 }
@@ -448,10 +494,10 @@ let checkTestObjectDemo = false;
 
 function TestObjectfollow(){
     if (!checkmessage) return;
-    if (distanceInt <= 50) return runTest("Objectfollow",".Objectfollow");
+    if (HCSR04_DistanceInt <= 50) return runTest("Objectfollow",".Objectfollow");
     
     // Hiển thị thông báo khi khoảng cách không đạt yêu cầu
-    UI('infoContent').style.display = 'block';
+    UI('customAlert').style.display = 'block';
     checkTestObjectDemo = true;
     checkClickDone = true;
 }
@@ -461,6 +507,12 @@ function TestIRLineCalibration(){
 }
 
 //*****************************************************************//
+
+function Done_handle(){
+    if(areAllElementsEqualToOne(checkButtonGreen) && areAllElementsEqualToOne(checksum) && HCSR04_Value10cm && HCSR04_Value30cm){
+        navbarTitle.style.color = "green";
+    }
+}
 
 function resetVariable() {
     // 1. Thiết lập lại hiển thị và giao diện
@@ -491,23 +543,23 @@ function resetVariable() {
     UI('textangleR').textContent = '';
 
     // 4. Đặt lại các timeout
-    clearTimeout(Timeout10cm);
-    clearTimeout(Timeout30cm);
+    clearTimeout(HCSR04_Timeout10cm);
+    clearTimeout(HCSR04_Timeout30cm);
     clearTimeout(timeoutCheckMessage);
     for (let i = 0; i < 12; i++) {
-        clearTimeout(Timeout1[i]);
-        clearTimeout(Timeout0[i]);
+        clearTimeout(IR_TimeoutValue1[i]);
+        clearTimeout(IR_TimeoutValue0[i]);
     }
 
     // 5. Đặt lại các giá trị mảng và biến cờ
     UI('distanceSlider').value = 0;
     checksum = Array(12).fill(0);
-    check0 = Array(12).fill(0);
-    check1 = Array(12).fill(0);
-    Lastcommand1 = Array(12).fill(true);
-    Lastcommand0 = Array(12).fill(true);
-    check10cm = false;
-    check30cm = false;
+    IR_checkValue0 = Array(8).fill(0);
+    IR_checkValue1 = Array(8).fill(0);
+    IR_LastCmdValue1 = Array(8).fill(true);
+    IR_LastCmdValue0 = Array(8).fill(true);
+    HCSR04_Value10cm = false;
+    HCSR04_Value30cm = false;
     checkClickDone = false;
     checkTestObjectDemo = false;
     checkCalibrationGripper = false;
@@ -517,8 +569,8 @@ function resetVariable() {
     resetElements.forEach((id, index) => {
         let paragraph = UI(id).querySelector('p');
         paragraph.innerHTML = `${id}<br>0`; // Sử dụng <br> để xuống dòng
-        CountTouch[index] = 0; // Đặt lại CountTouch cho các phần tử này
-        checkCoutTouch[index] = true; // Đặt lại checkCoutTouch
+        Touch_Count[index] = 0; // Đặt lại Touch_Count cho các phần tử này
+        Touch_checkCount[index] = true; // Đặt lại Touch_checkCount
     });
 
     // 7. Thiết lập lại ngưỡng cho cảm biến
@@ -541,48 +593,6 @@ if (!checkmessage) {
     elements.forEach(item => {
         item.style.color = resetColor;
     });
-}
-
-let ir2L, ir0L, ir1R, ir3R, ir4L, ir6L, ir5R, ir7R;
-let TB1A, TB1B, TB2A, TB2B;
-let distance = "", angleL, angleR, distanceInt;
-let lineState = "", report;
-// let arrString;
-
-const sliderbackground = UI('slider');
-
-// Touch counters and check flags
-let CountTouch = Array(4).fill(0);
-let checkCoutTouch = Array(4).fill(true);
-
-// Check variables for distance commands
-let check10cm = false, check30cm = false;
-let Lastcommand10cm = true, Lastcommand30cm = true;
-let Timeout10cm, Timeout30cm;
-// Arrays to track states and commands
-let checkArray = [], checksum = [];
-let check0 = Array(12).fill(false), check1 = Array(12).fill(false);
-let Lastcommand0 = Array(12).fill(true), Lastcommand1 = Array(12).fill(true);
-let Timeout0 = [], Timeout1 = [];
-
-
-// Các id của IR và Touch trong Grid
-const elementIds = [
-    "TB1A", "TB1B", "TB2A", "TB2B", 
-    "ir6L", "ir4L", "ir2L", "ir0L", 
-    "ir1R", "ir3R", "ir5R", "ir7R"
-];
-
-
-// Initial Gripper Calibration
-let textButtonGripperCalibration = UI('Gripper_Calibration');
-let checkCalibrationGripper = false;
-// End Initial Gripper Calibrations
-
-let threshold = Array(8).fill(map(100, 0, 768, 0, 255));
-
-function map(value, in_min, in_max, out_min, out_max) {
-    return parseInt((value - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
 }
 
 function updateBackground(id, value) {
